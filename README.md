@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # bible_trivia
 
 A new Flutter project.
@@ -14,3 +15,6 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# bibleTrivia
+>>>>>>> 5b852b2d1e4b36f5d7be782befeda3718a84ad9b
