@@ -38,7 +38,7 @@ google-services.json
 .dart_tool/
 .packages
 .pub/
-windows/flutter/
+#windows/flutter/
 
 # Exclude Windows build artifacts
 windows/flutter/ephemeral/
