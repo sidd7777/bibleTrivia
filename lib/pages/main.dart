@@ -1,4 +1,5 @@
 import 'package:bible_trivia/factory.dart';
+import 'package:bible_trivia/pages/game_level_map.dart';
 import 'package:bible_trivia/pages/quiz_page.dart';
 import 'package:bible_trivia/widgets/app_drawer.dart';
 import 'package:bible_trivia/widgets/custom_app_bar.dart';
@@ -81,6 +82,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     Icon(Icons.arrow_forward),
                   ],
                 ),
+              ),
+              const SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const GameLevelMap()),
+                  );
+                },
+                child: const Text("Start game"),
               ),
             ],
           ),
