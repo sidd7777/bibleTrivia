@@ -2,6 +2,7 @@ import 'dart:async'; // For Timer
 
 import 'package:flutter/material.dart';
 
+import '../../../core/app-theme/app_theme.dart';
 import '../widgets/level_circle.dart';
 import '../widgets/path_painter.dart';
 
@@ -24,10 +25,10 @@ class GameLevelMapState extends State<GameLevelMap> {
   void initState() {
     super.initState();
 
-    // Start a timer to show the CircularProgressIndicator for 3 seconds
-    Timer(const Duration(milliseconds: 500), () {
+    // Start a timer to show the CircularProgressIndicator for a few milliseconds
+    Timer(const Duration(milliseconds: 100), () {
       setState(() {
-        showLoading = false; // After 3 seconds, hide the loading indicator
+        showLoading = false; // Hide the loading indicator
         pathReady =
             PathPainter.circleCenters.isNotEmpty; // Ensure path is ready
         _scrollToCurrentLevel(); // Scroll to the current level once ready
@@ -56,18 +57,19 @@ class GameLevelMapState extends State<GameLevelMap> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Game Levels'),
-        backgroundColor: Colors.blueAccent,
+        title: const Text(AppTheme.gameLevelsText),
+        backgroundColor: AppTheme.backgroundColor, // Use AppTheme for AppBar
       ),
       body: Center(
-        child: // Show loading for 3 seconds
-
-            Container(
+        child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.orange, Colors.black], // Gradient colors
+              colors: [
+                AppTheme.primaryColor, // AppTheme primary color
+                Colors.black,
+              ],
             ),
           ),
           child: LayoutBuilder(
@@ -131,7 +133,8 @@ class GameLevelMapState extends State<GameLevelMap> {
                             child: const Icon(
                               Icons.account_circle_rounded, // User icon
                               size: 50,
-                              color: Colors.orange, // User icon color
+                              color: AppTheme
+                                  .iconColor, // Use AppTheme for icon color
                             ),
                           ),
                         ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../pages/main.dart';
+import '../core/app-theme/app_theme.dart';
+import '../core/app-theme/inherited_app_theme.dart';
+import '../main.dart';
+import 'custom_list_tile.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -13,33 +16,32 @@ class AppDrawer extends StatelessWidget {
         children: <Widget>[
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: AppTheme
+                  .drawerHeaderBackgroundColor, // Use AppTheme for background
             ),
             child: Text(
-              'Quiz Menu',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
+              AppTheme.quizMenuText,
+              style: InheritedAppTheme
+                  .drawerHeaderTextStyle, // Use AppTheme for text style
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Home'),
+          CustomListTile(
+            title: AppTheme.homeText,
+            icon: Icons.home,
             onTap: () {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const MyHomePage(
-                    title: 'Bible Trivia App',
+                    title: AppTheme.appBarTitleText,
                   ),
                 ),
               );
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.exit_to_app),
-            title: const Text('Exit'),
+          CustomListTile(
+            title: AppTheme.exitText,
+            icon: Icons.exit_to_app,
             onTap: () {
               Navigator.pop(context); // Close the drawer
             },
