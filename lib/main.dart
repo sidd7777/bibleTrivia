@@ -1,14 +1,18 @@
+import 'package:bible_trivia/app/sign-in/pages/sign_in_page.dart';
 import 'package:bible_trivia/core/app-theme/inherited_app_theme.dart';
 import 'package:bible_trivia/widgets/app_drawer.dart';
 import 'package:bible_trivia/widgets/custom_app_bar.dart';
 import 'package:bible_trivia/widgets/custom_button.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'app/game-levels/pages/game_level_map.dart';
 import 'app/quiz/pages/quiz_page.dart';
 import 'core/app-theme/app_theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -98,6 +102,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const GameLevelMap(),
+                    ),
+                  );
+                },
+              ),
+              CustomElevatedButton(
+                buttonText: "Sign in Page",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SignInPage(),
                     ),
                   );
                 },
