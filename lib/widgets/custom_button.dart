@@ -6,6 +6,8 @@ class CustomElevatedButton extends StatelessWidget {
   final Color? backgroundColor; // Optional background color (used for gradient)
   final Color? textColor; // Optional text color
   final Color? borderColor; // Optional border color
+  final Icon? icon;
+  final Image? image;
 
   const CustomElevatedButton({
     super.key,
@@ -13,7 +15,9 @@ class CustomElevatedButton extends StatelessWidget {
     required this.onPressed,
     this.backgroundColor,
     this.textColor,
-    this.borderColor, // Allow partial customization
+    this.borderColor,
+    this.icon,
+    this.image, // Allow partial customization
   });
 
   @override
@@ -27,7 +31,7 @@ class CustomElevatedButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25.0), // Curved at the ends
         ),
-        elevation: 10.0, // Text color
+        elevation: 10.0,
       ),
       child: Ink(
         decoration: BoxDecoration(
@@ -38,23 +42,47 @@ class CustomElevatedButton extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(5.0),
+          borderRadius: BorderRadius.circular(10.0),
           border: Border.all(
-            color:
-                borderColor ?? Colors.deepPurpleAccent, // Default border color
+            color: borderColor ?? Colors.deepPurpleAccent, // Default border color
           ),
         ),
         child: Container(
           constraints: const BoxConstraints(
-              minWidth: 75, minHeight: 50.0), // Minimum button size
+            minWidth: 75,
+            minHeight: 50.0,
+          ), // Minimum button size
           alignment: Alignment.center,
-          child: Text(
-            buttonText,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              color: textColor ?? Colors.white, // Default or custom text color
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) // Show icon if provided
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: icon,
+                ),
+              if (image != null) // Show image with controlled size if provided
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: SizedBox(
+                    width: 36.0,
+                    height: 36.0,
+                    child: image,
+                  ),
+                ),
+              Flexible(
+                child: Text(
+                  buttonText,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: textColor ?? Colors.white, // Default or custom text color
+                  ),
+                  textAlign: TextAlign.center, // Ensure the text is centered
+                ),
+              ),
+            ],
           ),
         ),
       ),
