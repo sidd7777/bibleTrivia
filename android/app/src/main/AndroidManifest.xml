@@ -1,10 +1,18 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.bible_trivia">
+
+    <!-- Permission for internet access -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Optional: Permission for accessing network state (if needed) -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:label="bible_trivia"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
-        android:theme="@style/LaunchTheme">
+        android:theme="@style/LaunchTheme"
+        android:enableOnBackInvokedCallback="true">
 
         <activity
             android:name=".MainActivity"
@@ -25,6 +33,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Google Sign-In dependencies -->
+        <meta-data
+            android:name="com.google.android.gms.auth.api.signin.DEPENDENCIES"
+            android:value="oauth2:https://www.googleapis.com/auth/userinfo.email" />
 
         <meta-data
             android:name="flutterEmbedding"

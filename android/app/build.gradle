@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'dev.flutter.flutter-gradle-plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -32,15 +33,22 @@ android {
 
         debug {
             debuggable true
-            applicationIdSuffix ".debug"
         }
     }
 
     applicationVariants.all { variant ->
         variant.assemble.doLast {
+            // Get the variant name (e.g., debug or release)
+            def variantName = variant.buildType.name
+
+            // Set the source and destination paths dynamically
+            def apkSourcePath = "../android/app/build/outputs/apk/${variantName}/app-${variantName}.apk"
+            def apkDestinationPath = "../build/host/outputs/apk"
+
+            // Copy the APK
             copy {
-                from 'D:/Volunteer/bible_trivia/android/app/build/outputs/apk/debug/app-debug.apk' // Source APK path
-                into 'D:/Volunteer/bible_trivia/build/host/outputs/apk' // Destination path
+                from apkSourcePath // Dynamic source path based on variant
+                into apkDestinationPath // Destination path
             }
         }
     }
@@ -61,4 +69,6 @@ flutter {
 
 dependencies {
     // Add any additional dependencies here
+    implementation 'com.google.android.gms:play-services-auth:latest_version'
+
 }

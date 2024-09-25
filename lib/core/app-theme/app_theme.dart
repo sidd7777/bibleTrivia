@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Text
   static const String welcomeText = 'Welcome to the Bible Trivia Game!';
   static const String knowledgeText =
       'Test your knowledge about the Bible with this fun quiz!';
@@ -17,6 +16,14 @@ class AppTheme {
   static const String homeText = "Home";
   static const String gameLevelsText = "Game Levels";
   static const String confirmSelectionText = "Confirm Selection";
+
+  // Login Page
+  static const String loginTitle = 'Login';
+  static const String emailLabel = 'Email';
+  static const String passwordLabel = 'Password';
+  static const String loginWithEmailButton = 'Login with Email';
+  static const String orText = 'OR';
+  static const String googleSignInButton = 'Sign in with Google';
 
   // Colors
   static const Color primaryColor = Color(0xFF6200EA); // Purple
