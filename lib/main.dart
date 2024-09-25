@@ -1,3 +1,4 @@
+import 'package:bible_trivia/app/sign-in/pages/common_login_page.dart';
 import 'package:bible_trivia/core/app-theme/inherited_app_theme.dart';
 import 'package:bible_trivia/widgets/app_drawer.dart';
 import 'package:bible_trivia/widgets/custom_app_bar.dart';
@@ -7,8 +8,13 @@ import 'package:flutter/material.dart';
 import 'app/game-levels/pages/game_level_map.dart';
 import 'app/quiz/pages/quiz_page.dart';
 import 'core/app-theme/app_theme.dart';
+import 'core/utility/config.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  print("Loading environment variables...");
+  print(Config.serverClientId);
+  print("Environment variables loaded.");
   runApp(const MyApp());
 }
 
@@ -62,47 +68,60 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       drawer: const AppDrawer(),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                AppTheme.welcomeText,
-                textAlign: TextAlign.center,
-                style: InheritedAppTheme.headerTextStyle,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                AppTheme.knowledgeText,
-                style: InheritedAppTheme.bodyTextStyle,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              CustomElevatedButton(
-                buttonText: AppTheme.startQuizText,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const QuizPage(),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 20.0),
-              CustomElevatedButton(
-                buttonText: AppTheme.startGameText,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const GameLevelMap(),
-                    ),
-                  );
-                },
-              ),
-            ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  AppTheme.welcomeText,
+                  textAlign: TextAlign.center,
+                  style: InheritedAppTheme.headerTextStyle,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  AppTheme.knowledgeText,
+                  style: InheritedAppTheme.bodyTextStyle,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                CustomElevatedButton(
+                  buttonText: AppTheme.startQuizText,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const QuizPage(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20.0),
+                CustomElevatedButton(
+                  buttonText: AppTheme.startGameText,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const GameLevelMap(),
+                      ),
+                    );
+                  },
+                ),
+                CustomElevatedButton(
+                  buttonText: "Sign in Page",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CommonLoginPage(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
