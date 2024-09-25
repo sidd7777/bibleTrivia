@@ -11,6 +11,7 @@ import '../../../core/utility/config.dart';
 class AuthService {
   late final String serverClientId; // Declare the serverClientId
   late GoogleSignIn googleSignIn; // Declare the GoogleSignIn instance
+  final String backendUrl = "http://11.42.13.145:5000";
 
   AuthService() {
     serverClientId = Config.serverClientId;
@@ -24,11 +25,10 @@ class AuthService {
   }
 
   // Email/Password login logic
-  Future<http.Response> loginWithEmailPassword(
-      String email, String password) async {
+  Future<http.Response> loginWithEmailPassword(String email, String password) async {
     try {
       var response = await http.post(
-        Uri.parse('http://11.42.13.145:5000/api/login'), // Your backend URL
+        Uri.parse("$backendUrl/api/login"), // Your backend URL
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );
@@ -47,8 +47,7 @@ class AuthService {
         return;
       }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final idToken = googleAuth.idToken;
 
       // Check if idToken is null
@@ -58,8 +57,7 @@ class AuthService {
       }
 
       var response = await http.post(
-        Uri.parse(
-            'http://11.42.13.145:5000/api/google-signin'), // Your backend URL
+        Uri.parse('$backendUrl/api/google-signin'), // Your backend URL
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'token': idToken}), // Ensure the key is 'token'
       );

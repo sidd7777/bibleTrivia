@@ -36,7 +36,9 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const MyHomePage(title: ""),
+              builder: (context) => const MyHomePage(
+                title: AppTheme.appBarTitleText,
+              ),
             ),
           );
         }
@@ -62,7 +64,9 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const MyHomePage(title: ""),
+          builder: (context) => const MyHomePage(
+            title: AppTheme.appBarTitleText,
+          ),
         ),
       );
     }
@@ -73,8 +77,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
     return Scaffold(
       appBar: AppBar(title: const Text(AppTheme.loginTitle)),
       body: Padding(
-        padding:
-            const EdgeInsets.all(AppTheme.spaceSizeMedium), // Use theme spacing
+        padding: const EdgeInsets.all(AppTheme.spaceSizeMedium), // Use theme spacing
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -102,9 +105,10 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
               ],
             ),
             CustomElevatedButton(
+              image: Image.asset('assets/images/google.png'),
               buttonText: AppTheme.googleSignInButton,
               onPressed: _handleGoogleLogin,
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.purple[200],
               textColor: Colors.black,
             ),
           ],
