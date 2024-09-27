@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'dev.flutter.flutter-gradle-plugin'
     id 'com.google.gms.google-services'
+
 }
 
 android {
@@ -20,6 +21,11 @@ android {
     signingConfigs {
         release {
             // TODO: Set up your release signing config here
+            // Example:
+            // storeFile file("path/to/your/keystore")
+            // storePassword "your_keystore_password"
+            // keyAlias "your_key_alias"
+            // keyPassword "your_key_password"
         }
     }
 
@@ -36,6 +42,7 @@ android {
         }
     }
 
+    // Copy APK dynamically after each build
     applicationVariants.all { variant ->
         variant.assemble.doLast {
             // Get the variant name (e.g., debug or release)
@@ -69,6 +76,10 @@ flutter {
 
 dependencies {
     // Add any additional dependencies here
-    implementation 'com.google.android.gms:play-services-auth:latest_version'
+    implementation 'androidx.multidex:multidex:2.0.1' // Ensure multidex support
+    implementation 'com.google.android.gms:play-services-auth:21.2.0' // Google Play Services Auth library
+    implementation 'com.google.android.gms:play-services-games:23.2.0' // For Google Play Games services
 
 }
+
+apply plugin: 'com.google.gms.google-services' // Apply Google Services at the end

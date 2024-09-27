@@ -76,42 +76,44 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text(AppTheme.loginTitle)),
-      body: Padding(
-        padding: const EdgeInsets.all(AppTheme.spaceSizeMedium), // Use theme spacing
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomTextField(
-              controller: _emailController,
-              labelText: AppTheme.emailLabel,
-            ),
-            CustomTextField(
-              controller: _passwordController,
-              labelText: AppTheme.passwordLabel,
-              isPassword: true, // Set this to true to obscure the password
-            ),
-            CustomElevatedButton(
-              buttonText: AppTheme.loginWithEmailButton,
-              onPressed: _handleEmailPasswordLogin,
-            ),
-            const Row(
-              children: [
-                Expanded(child: Divider(thickness: 1)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(AppTheme.orText),
-                ),
-                Expanded(child: Divider(thickness: 1)),
-              ],
-            ),
-            CustomElevatedButton(
-              image: Image.asset('assets/images/google.png'),
-              buttonText: AppTheme.googleSignInButton,
-              onPressed: _handleGoogleLogin,
-              backgroundColor: Colors.purple[200],
-              textColor: Colors.black,
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(AppTheme.spaceSizeMedium), // Use theme spacing
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomTextField(
+                controller: _emailController,
+                labelText: AppTheme.emailLabel,
+              ),
+              CustomTextField(
+                controller: _passwordController,
+                labelText: AppTheme.passwordLabel,
+                isPassword: true, // Set this to true to obscure the password
+              ),
+              CustomElevatedButton(
+                buttonText: AppTheme.loginWithEmailButton,
+                onPressed: _handleEmailPasswordLogin,
+              ),
+              const Row(
+                children: [
+                  Expanded(child: Divider(thickness: 1)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(AppTheme.orText),
+                  ),
+                  Expanded(child: Divider(thickness: 1)),
+                ],
+              ),
+              CustomElevatedButton(
+                image: Image.asset('assets/images/google.png'),
+                buttonText: AppTheme.googleSignInButton,
+                onPressed: _handleGoogleLogin,
+                backgroundColor: Colors.purple[200],
+                textColor: Colors.black,
+              ),
+            ],
+          ),
         ),
       ),
     );

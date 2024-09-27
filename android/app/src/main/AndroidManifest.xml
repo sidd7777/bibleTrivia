@@ -1,28 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.bible_trivia">
 
-    <!-- Permission for internet access -->
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- Optional: Permission for accessing network state (if needed) -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:label="bible_trivia"
         android:icon="@mipmap/ic_launcher"
-        android:allowBackup="true"
-        android:theme="@style/LaunchTheme"
-        android:enableOnBackInvokedCallback="true">
+        android:theme="@style/LaunchTheme">
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTop"
-            android:taskAffinity=""
-            android:theme="@style/LaunchTheme"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
+            android:launchMode="singleTop">
+
 
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
@@ -34,7 +25,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Google Sign-In dependencies -->
         <meta-data
             android:name="com.google.android.gms.auth.api.signin.DEPENDENCIES"
             android:value="oauth2:https://www.googleapis.com/auth/userinfo.email" />
@@ -42,6 +32,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
     <queries>
