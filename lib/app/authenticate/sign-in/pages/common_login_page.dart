@@ -1,14 +1,13 @@
-// login_page.dart
-
 import 'dart:convert';
 
-import 'package:bible_trivia/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/app-theme/app_theme.dart';
-import '../../../main.dart';
-import '../../../widgets/custom_text_field.dart';
-import '../auth/auth_service.dart';
+import '../../../../core/app-theme/app_theme.dart';
+import '../../../../main.dart';
+import '../../../../widgets/custom_button.dart';
+import '../../../../widgets/custom_text_field.dart';
+import '../../auth/auth_service.dart';
+import '../../sign-up/pages/sign_up_page.dart';
 
 class CommonLoginPage extends StatefulWidget {
   const CommonLoginPage({super.key});
@@ -29,9 +28,8 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
       var response = await authService.loginWithEmailPassword(email, password);
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        String token = jsonResponse['token']; // Example of using jsonResponse
+        String token = jsonResponse['token'];
         print('Email login successful: $token');
-        // Navigate to the home page or another screen
         if (mounted) {
           Navigator.push(
             context,
@@ -55,11 +53,9 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
       print('Attempting Google Sign-In...');
       await authService.loginWithGoogle();
       print('Google Sign-In successful');
-      // Handle successful login
     } catch (e) {
       print('Error during Google Sign-In: $e');
     }
-    // Handle the next action (e.g., navigation to the home screen)
     if (mounted) {
       Navigator.push(
         context,
@@ -78,7 +74,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
       appBar: AppBar(title: const Text(AppTheme.loginTitle)),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spaceSizeMedium), // Use theme spacing
+          padding: const EdgeInsets.all(AppTheme.spaceSizeMedium),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -89,7 +85,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
               CustomTextField(
                 controller: _passwordController,
                 labelText: AppTheme.passwordLabel,
-                isPassword: true, // Set this to true to obscure the password
+                isPassword: true,
               ),
               CustomElevatedButton(
                 buttonText: AppTheme.loginWithEmailButton,
@@ -111,6 +107,23 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                 onPressed: _handleGoogleLogin,
                 backgroundColor: Colors.purple[200],
                 textColor: Colors.black,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(AppTheme.dontHaveAccountText), // "Don't have an account?"
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignUpPage(),
+                        ),
+                      );
+                    },
+                    child: const Text(AppTheme.createAccountText), // "Create an account"
+                  ),
+                ],
               ),
             ],
           ),

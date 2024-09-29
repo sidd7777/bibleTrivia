@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static const String welcomeText = 'Welcome to the Bible Trivia Game!';
-  static const String knowledgeText =
-      'Test your knowledge about the Bible with this fun quiz!';
+  static const String knowledgeText = 'Test your knowledge about the Bible with this fun quiz!';
   static const String appBarTitleText = "Bible Trivia App";
   static const String startQuizText = "Start Quiz";
   static const String startGameText = "Start Game";
   static const String exitQuizText = "End Quiz?";
   static const String exitText = "Exit";
   static const String cancelText = "Cancel";
-  static const String confirmationExitQuiz =
-      "Are you sure you want to exit the Quiz?";
+  static const String confirmationExitQuiz = "Are you sure you want to exit the Quiz?";
   static const String quizMenuText = 'Quiz Menu';
   static const String homeText = "Home";
   static const String gameLevelsText = "Game Levels";
@@ -24,6 +22,10 @@ class AppTheme {
   static const String loginWithEmailButton = 'Login with Email';
   static const String orText = 'OR';
   static const String googleSignInButton = 'Sign in with Google';
+  static const String signUpTitle = 'Sign Up';
+  static const String dontHaveAccountText = "Don't have an account?";
+  static const String createAccountText = "Create an account";
+  static const String signUpButtonText = 'Sign Up';
 
   // Colors
   static const Color primaryColor = Color(0xFF6200EA); // Purple
@@ -31,12 +33,10 @@ class AppTheme {
   static const Color backgroundColor = Color(0xFF121212); // Dark Black
   static const Color textColor = Colors.white; // White for text
   static const Color buttonTextColor = Colors.white; // White text for buttons
-  static const Color buttonBackgroundColor =
-      primaryColor; // Purple button background
+  static const Color buttonBackgroundColor = primaryColor; // Purple button background
   static const Color drawerHeaderBackgroundColor = Colors.deepPurple;
   static const Color iconColor = Colors.white;
-  static const Color optionCardColor =
-      Color(0xFF303030); // Dark grey for option cards
+  static const Color optionCardColor = Color(0xFF303030); // Dark grey for option cards
 
   // Spacing
   static const double spaceSizeExtremeSmall = 8.0;

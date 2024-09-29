@@ -1,4 +1,3 @@
-import 'package:bible_trivia/app/sign-in/pages/common_login_page.dart';
 import 'package:bible_trivia/core/app-theme/inherited_app_theme.dart';
 import 'package:bible_trivia/widgets/app_drawer.dart';
 import 'package:bible_trivia/widgets/custom_app_bar.dart';
@@ -6,6 +5,7 @@ import 'package:bible_trivia/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'app/authenticate/sign-in/pages/common_login_page.dart';
 import 'app/game-levels/pages/game_level_map.dart';
 import 'app/quiz/pages/quiz_page.dart';
 import 'core/app-theme/app_theme.dart';
