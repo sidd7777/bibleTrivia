@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-# bibleTriviaApp
-=======
-# bibleTrivia
->>>>>>> origin/main
+A Bible Trivia App
