@@ -11,7 +11,7 @@ import '../../../core/utility/config.dart';
 class AuthService {
   late final String serverClientId; // Declare the serverClientId
   late GoogleSignIn googleSignIn; // Declare the GoogleSignIn instance
-  final String backendUrl = "http://11.42.13.145:5000";
+  final String backendUrl = "http://11.44.254.48:5000";
 
   AuthService() {
     serverClientId = Config.serverClientId;
@@ -44,6 +44,7 @@ class AuthService {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
         // The user canceled the sign-in
+        print('Google sign-in canceled.');
         return;
       }
 
@@ -55,6 +56,9 @@ class AuthService {
         print('Error: No ID Token received');
         return;
       }
+
+      // Print the actual ID token
+      print('Google Sign-In successful: ID Token = $idToken');
 
       var response = await http.post(
         Uri.parse('$backendUrl/api/google-signin'), // Your backend URL
