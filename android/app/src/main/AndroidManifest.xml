@@ -3,28 +3,15 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Add more permissions as needed -->
 
     <application
         android:label="bible_trivia"
         android:icon="@mipmap/ic_launcher"
-        android:theme="@style/LaunchTheme">
+        android:theme="@style/LaunchTheme"
+        android:enableOnBackInvokedCallback="true">
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:launchMode="singleTop">
-
-
-            <meta-data
-                android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+        <!-- Meta-data entries -->
         <meta-data
             android:name="com.google.android.gms.auth.api.signin.DEPENDENCIES"
             android:value="oauth2:https://www.googleapis.com/auth/userinfo.email" />
@@ -36,6 +23,21 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/NormalTheme"
+            android:exported="true">
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
     <queries>

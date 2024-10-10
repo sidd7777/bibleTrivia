@@ -1,9 +1,10 @@
-import 'dart:convert';
-
+import 'package:bible_trivia/main.dart';
+import 'package:bible_trivia/widgets/custom_error_dialog.dart';
+import 'package:bible_trivia/widgets/custom_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/app-theme/app_theme.dart';
-import '../../../../main.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/custom_text_field.dart';
 import '../../auth/auth_service.dart';
@@ -19,109 +20,226 @@ class CommonLoginPage extends StatefulWidget {
 class _CommonLoginPageState extends State<CommonLoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthService authService = AuthService(); // Instance of AuthService
+  final AuthService authService = AuthService();
+  bool _passwordVisible = false;
+  bool _isLoading = false;
+  bool _isGoogleLoading = false;
+  bool _isFacebookLoading = false;
 
-  void _handleEmailPasswordLogin() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    try {
-      var response = await authService.loginWithEmailPassword(email, password);
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body);
-        String token = jsonResponse['token'];
-        print('Email login successful: $token');
-        if (mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const MyHomePage(
-                title: AppTheme.appBarTitleText,
-              ),
-            ),
-          );
-        }
-      } else {
-        print('Email login failed: ${response.body}');
-      }
-    } catch (e) {
-      print('Error during login: $e');
-    }
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
-  void _handleGoogleLogin() async {
-    try {
-      print('Attempting Google Sign-In...');
-      await authService.loginWithGoogle();
-      print('Google Sign-In successful');
-    } catch (e) {
-      print('Error during Google Sign-In: $e');
+  void _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      _showErrorDialog(AppTheme.allFieldsRequiredMessage);
+      setState(() {
+        _isLoading = false;
+      });
+      return;
     }
-    if (mounted) {
-      Navigator.push(
+
+    // Email format validation
+    if (!RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email)) {
+      _showErrorDialog("Please enter a valid email address.");
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    // Password validation (e.g., minimum length 6 characters)
+    if (password.length < 6) {
+      _showErrorDialog("Password must be at least 6 characters long.");
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    User? user = await authService.signInWithEmailPassword(
+      context,
+      email,
+      password,
+    );
+    if (user != null) {
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const MyHomePage(
+          builder: (context) => MyHomePage(
             title: AppTheme.appBarTitleText,
           ),
         ),
       );
+    } else {
+      _showErrorDialog(AppTheme.registrationFailedMessage);
     }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomErrorDialog(
+          content: message,
+          onClose: () {
+            Navigator.of(context).pop();
+          },
+          title: AppTheme.errorDialogTitle,
+        );
+      },
+    );
+  }
+
+  Future<void> _loginWithFacebook() async {
+    setState(() {
+      _isFacebookLoading = true;
+    });
+
+    User? user = await authService.signInWithFacebook();
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyHomePage(
+            title: AppTheme.appBarTitleText,
+          ),
+        ),
+      );
+    } else {
+      _showErrorDialog(AppTheme.facebookSignInFailedMessage);
+    }
+
+    setState(() {
+      _isFacebookLoading = false;
+    });
+  }
+
+  Future<void> _loginWithGoogle() async {
+    setState(() {
+      _isGoogleLoading = true;
+    });
+
+    User? user = await authService.signInWithGoogle();
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyHomePage(
+            title: AppTheme.appBarTitleText,
+          ),
+        ),
+      );
+    } else {
+      _showErrorDialog(AppTheme.googleSignInFailedMessage);
+    }
+
+    setState(() {
+      _isGoogleLoading = false;
+    });
+  }
+
+  void _forgotPassword() {
+    // Placeholder for forgot password functionality
+    _showErrorDialog("Forgot Password functionality not implemented yet.");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(AppTheme.loginTitle)),
+      appBar: AppBar(title: Text(AppTheme.appBarTitleText)),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spaceSizeMedium),
+          padding: EdgeInsets.all(AppTheme.spaceSizeMedium),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomTextField(
-                controller: _emailController,
-                labelText: AppTheme.emailLabel,
-              ),
-              CustomTextField(
-                controller: _passwordController,
-                labelText: AppTheme.passwordLabel,
-                isPassword: true,
-              ),
-              CustomElevatedButton(
-                buttonText: AppTheme.loginWithEmailButton,
-                onPressed: _handleEmailPasswordLogin,
-              ),
-              const Row(
-                children: [
-                  Expanded(child: Divider(thickness: 1)),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(AppTheme.orText),
+              // Card for email and password input
+              Card(
+                elevation: AppTheme.spaceSizeSmall,
+                child: Padding(
+                  padding: EdgeInsets.all(AppTheme.spaceSizeMedium),
+                  child: Column(
+                    children: [
+                      CustomTextField(
+                        controller: _emailController,
+                        labelText: AppTheme.emailLabel,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      SizedBox(height: AppTheme.spaceSizeMedium),
+                      CustomTextField(
+                        controller: _passwordController,
+                        labelText: AppTheme.passwordLabel,
+                        obscureText: !_passwordVisible,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(height: AppTheme.spaceSizeMedium),
+                      _isLoading
+                          ? CircularProgressIndicator()
+                          : CustomElevatedButton(
+                              onPressed: _isLoading ? () {} : _login,
+                              buttonText: AppTheme.loginText,
+                            ),
+                      CustomElevatedButton(
+                        buttonText: AppTheme.forgotPasswordText,
+                        onPressed: _forgotPassword,
+                      )
+                    ],
                   ),
-                  Expanded(child: Divider(thickness: 1)),
-                ],
+                ),
               ),
-              CustomElevatedButton(
-                image: Image.asset('assets/images/google.png'),
-                buttonText: AppTheme.googleSignInButton,
-                onPressed: _handleGoogleLogin,
-                backgroundColor: Colors.purple[200],
-                textColor: Colors.black,
-              ),
+
+              _isGoogleLoading
+                  ? CircularProgressIndicator()
+                  : CustomElevatedButton(
+                      onPressed: _isGoogleLoading ? () {} : _loginWithGoogle,
+                      buttonText: AppTheme.googleSignInButtonText,
+                    ),
+
+              _isFacebookLoading
+                  ? CircularProgressIndicator()
+                  : CustomElevatedButton(
+                      onPressed: _isFacebookLoading ? () {} : _loginWithFacebook,
+                      buttonText: AppTheme.facebookSignInButtonText,
+                    ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(AppTheme.dontHaveAccountText), // "Don't have an account?"
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignUpPage(),
-                        ),
-                      );
-                    },
-                    child: const Text(AppTheme.createAccountText), // "Create an account"
+                  CustomText(text: AppTheme.alreadyHaveAccountText),
+                  CustomElevatedButton(
+                    onPressed: _isLoading
+                        ? () {}
+                        : () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignUpPage(),
+                              ),
+                            );
+                          },
+                    buttonText: AppTheme.signUpButtonText, // Use the sign-up redirect text
                   ),
                 ],
               ),

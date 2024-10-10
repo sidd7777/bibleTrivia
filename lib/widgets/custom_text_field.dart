@@ -5,13 +5,23 @@ import '../core/app-theme/app_theme.dart';
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
-  final bool isPassword; // New property to determine if it's a password field
+  final bool obscureText;
+  final Widget? suffixIcon;
+  final Widget? prefixIcon; // Add prefixIcon property
+  final ValueChanged<String>? onChanged;
+  final String? errorText;
+  final TextInputType? keyboardType;
 
   const CustomTextField({
     super.key,
     required this.controller,
     required this.labelText,
-    this.isPassword = false, // Default to false
+    this.obscureText = false,
+    this.suffixIcon,
+    this.prefixIcon, // Include prefixIcon in the constructor
+    this.onChanged,
+    this.errorText,
+    this.keyboardType,
   });
 
   @override
@@ -20,16 +30,21 @@ class CustomTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
+          keyboardType: keyboardType ?? TextInputType.text,
           controller: controller,
-          obscureText: isPassword, // Use isPassword to set obscureText
+          obscureText: obscureText,
           decoration: InputDecoration(
             labelText: labelText,
             border: const OutlineInputBorder(),
-            labelStyle: const TextStyle(color: AppTheme.textColor),
+            labelStyle: TextStyle(fontSize: AppTheme.fontSizeSmall),
+            suffixIcon: suffixIcon,
+            prefixIcon: prefixIcon, // Add prefixIcon to decoration
+            errorText: errorText,
           ),
-          style: const TextStyle(color: AppTheme.textColor),
+          style: TextStyle(fontSize: AppTheme.fontSizeNormal),
+          onChanged: onChanged,
         ),
-        const SizedBox(height: AppTheme.spaceSizeSmall), // Use theme spacing
+        const SizedBox(height: AppTheme.spaceSizeSmall),
       ],
     );
   }

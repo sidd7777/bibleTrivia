@@ -2,6 +2,8 @@ import 'package:bible_trivia/core/app-theme/inherited_app_theme.dart';
 import 'package:bible_trivia/widgets/app_drawer.dart';
 import 'package:bible_trivia/widgets/custom_app_bar.dart';
 import 'package:bible_trivia/widgets/custom_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,9 +12,13 @@ import 'app/game-levels/pages/game_level_map.dart';
 import 'app/quiz/pages/quiz_page.dart';
 import 'core/app-theme/app_theme.dart';
 import 'core/utility/config.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform); // Initialize Firebase
+  FirebaseAuth.instance.setLanguageCode('en');
   print("Loading environment variables...");
   print(Config.serverClientId);
   print("Environment variables loaded.");
@@ -34,13 +40,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         primaryColor: AppTheme.primaryColor,
         scaffoldBackgroundColor: AppTheme.backgroundColor,
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: AppTheme.primaryColor,
-          titleTextStyle: TextStyle(
-            color: AppTheme.textColor,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          titleTextStyle: InheritedAppTheme.appBarTextStyle,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
@@ -76,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppTheme.spaceSizeLarge),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -85,13 +87,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   textAlign: TextAlign.center,
                   style: InheritedAppTheme.headerTextStyle,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppTheme.spaceSizeMedium), // Updated
                 Text(
                   AppTheme.knowledgeText,
                   style: InheritedAppTheme.bodyTextStyle,
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: AppTheme.spaceSizeMedium), // Updated
                 CustomElevatedButton(
                   buttonText: AppTheme.startQuizText,
                   onPressed: () {
@@ -103,7 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   },
                 ),
-                const SizedBox(height: 20.0),
                 CustomElevatedButton(
                   buttonText: AppTheme.startGameText,
                   onPressed: () {
@@ -116,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
                 CustomElevatedButton(
-                  buttonText: "Sign in Page",
+                  buttonText: AppTheme.signInText,
                   onPressed: () {
                     Navigator.push(
                       context,

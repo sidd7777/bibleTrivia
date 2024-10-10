@@ -1,11 +1,13 @@
+import 'package:bible_trivia/core/app-theme/app_theme.dart';
+import 'package:bible_trivia/core/app-theme/inherited_app_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   final String buttonText;
-  final VoidCallback onPressed;
-  final Color? backgroundColor; // Optional background color (used for gradient)
-  final Color? textColor; // Optional text color
-  final Color? borderColor; // Optional border color
+  final VoidCallback onPressed; // This is now required
+  final Color? backgroundColor;
+  final Color? textColor;
+  final Color? borderColor;
   final Icon? icon;
   final Image? image;
 
@@ -17,74 +19,92 @@ class CustomElevatedButton extends StatelessWidget {
     this.textColor,
     this.borderColor,
     this.icon,
-    this.image, // Allow partial customization
+    this.image,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        foregroundColor: textColor ?? Colors.white,
-        backgroundColor: Colors.transparent,
-        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(1.0), // Curved at the ends
-        ),
-        elevation: 10.0,
+      style: _buildButtonStyle(context),
+      child: _buildButtonContent(),
+    );
+  }
+
+  ButtonStyle _buildButtonStyle(BuildContext context) {
+    return ElevatedButton.styleFrom(
+      foregroundColor: textColor ?? AppTheme.buttonTextColor,
+      backgroundColor: Colors.transparent,
+      padding: EdgeInsets.symmetric(
+        vertical: AppTheme.buttonPaddingVertical,
+        horizontal: AppTheme.buttonPaddingHorizontal,
       ),
-      child: Ink(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: backgroundColor != null
-                ? [backgroundColor!, backgroundColor!.withOpacity(0.8)]
-                : [Colors.purple, Colors.deepPurpleAccent], // Default gradient
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(10.0),
-          border: Border.all(
-            color: borderColor ?? Colors.deepPurpleAccent, // Default border color
-          ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.buttonBorderRadius),
+      ),
+      // Set elevation to 0 to remove shadow
+      elevation: 0,
+      visualDensity: VisualDensity.compact, // Improve touch target
+    );
+  }
+
+  Widget _buildButtonContent() {
+    return Ink(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            backgroundColor ?? AppTheme.buttonBackgroundColor,
+            (backgroundColor ?? AppTheme.buttonBackgroundColor).withOpacity(0.8)
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Container(
-          constraints: const BoxConstraints(
-            minWidth: 75,
-            minHeight: 50.0,
-          ), // Minimum button size
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (icon != null) // Show icon if provided
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: icon,
+        borderRadius: BorderRadius.circular(AppTheme.buttonBorderRadius),
+        border: Border.all(
+          color: borderColor ?? AppTheme.buttonBackgroundColor,
+        ),
+      ),
+      child: Container(
+        constraints: BoxConstraints(
+          minWidth: AppTheme.buttonMinWidth,
+          minHeight: AppTheme.buttonMinHeight,
+        ),
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) _buildIcon(),
+            if (image != null) _buildImage(),
+            Flexible(
+              child: Text(
+                buttonText,
+                style: InheritedAppTheme.buttonTextStyle.copyWith(
+                  fontSize: AppTheme.buttonTextSize,
                 ),
-              if (image != null) // Show image with controlled size if provided
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: SizedBox(
-                    width: 36.0,
-                    height: 36.0,
-                    child: image,
-                  ),
-                ),
-              Flexible(
-                child: Text(
-                  buttonText,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: textColor ?? Colors.white, // Default or custom text color
-                  ),
-                  textAlign: TextAlign.center, // Ensure the text is centered
-                ),
+                textAlign: TextAlign.center,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildIcon() {
+    return Padding(
+      padding: EdgeInsets.only(right: AppTheme.iconPadding),
+      child: icon,
+    );
+  }
+
+  Widget _buildImage() {
+    return Padding(
+      padding: EdgeInsets.only(right: AppTheme.imagePadding),
+      child: SizedBox(
+        width: AppTheme.imageSize,
+        height: AppTheme.imageSize,
+        child: image,
       ),
     );
   }

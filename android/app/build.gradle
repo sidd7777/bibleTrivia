@@ -79,7 +79,10 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1' // Ensure multidex support
     implementation 'com.google.android.gms:play-services-auth:21.2.0' // Google Play Services Auth library
     implementation 'com.google.android.gms:play-services-games:23.2.0' // For Google Play Games services
-
+    implementation platform('com.google.firebase:firebase-bom:33.4.0') // Use the latest version
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-firestore'
 }
 
 apply plugin: 'com.google.gms.google-services' // Apply Google Services at the end
