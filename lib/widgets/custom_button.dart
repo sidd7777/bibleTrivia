@@ -34,6 +34,7 @@ class CustomElevatedButton extends StatelessWidget {
   ButtonStyle _buildButtonStyle(BuildContext context) {
     return ElevatedButton.styleFrom(
       foregroundColor: textColor ?? AppTheme.buttonTextColor,
+      // Ensure background is transparent so gradient is visible
       backgroundColor: Colors.transparent,
       padding: EdgeInsets.symmetric(
         vertical: AppTheme.buttonPaddingVertical,
@@ -51,6 +52,7 @@ class CustomElevatedButton extends StatelessWidget {
   Widget _buildButtonContent() {
     return Ink(
       decoration: BoxDecoration(
+        // Gradient for button background
         gradient: LinearGradient(
           colors: [
             backgroundColor ?? AppTheme.buttonBackgroundColor,
