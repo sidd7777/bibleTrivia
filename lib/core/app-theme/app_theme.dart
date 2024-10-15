@@ -77,7 +77,7 @@ class AppTheme {
   static const double buttonTextSize = 18.0;
   static const double iconPadding = 8.0;
   static const double imagePadding = 8.0;
-  static const double imageSize = 36.0;
+  static const double imageSize = 40.0;
 
   // Spacing
   static const double spaceSizeExtremeSmall = 8.0;

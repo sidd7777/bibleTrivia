@@ -41,53 +41,51 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) {
-      _showErrorDialog(AppTheme.allFieldsRequiredMessage);
-      setState(() {
-        _isLoading = false;
-      });
-      return;
-    }
-
-    // Email format validation
-    if (!RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email)) {
-      _showErrorDialog("Please enter a valid email address.");
-      setState(() {
-        _isLoading = false;
-      });
-      return;
-    }
-
-    // Password validation (e.g., minimum length 6 characters)
-    if (password.length < 6) {
-      _showErrorDialog("Password must be at least 6 characters long.");
-      setState(() {
-        _isLoading = false;
-      });
-      return;
-    }
-
-    User? user = await authService.signInWithEmailPassword(
-      context,
-      email,
-      password,
-    );
-    if (user != null) {
-      Navigator.pushReplacement(
+    // Input validation
+    if (_validateInputs(email, password)) {
+      User? user = await authService.signInWithEmailPassword(
         context,
-        MaterialPageRoute(
-          builder: (context) => MyHomePage(
-            title: AppTheme.appBarTitleText,
-          ),
-        ),
+        email,
+        password,
       );
-    } else {
-      _showErrorDialog(AppTheme.registrationFailedMessage);
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHomePage(
+              title: AppTheme.appBarTitleText,
+            ),
+          ),
+        );
+      } else {
+        _showErrorDialog(AppTheme.registrationFailedMessage);
+      }
     }
 
     setState(() {
       _isLoading = false;
     });
+  }
+
+  bool _validateInputs(String email, String password) {
+    if (email.isEmpty || password.isEmpty) {
+      _showErrorDialog(AppTheme.allFieldsRequiredMessage);
+      return false;
+    }
+
+    // Email format validation
+    if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(email)) {
+      _showErrorDialog("Please enter a valid email address.");
+      return false;
+    }
+
+    // Password validation (e.g., minimum length 6 characters)
+    if (password.length < 6) {
+      _showErrorDialog("Password must be at least 6 characters long.");
+      return false;
+    }
+
+    return true;
   }
 
   void _showErrorDialog(String message) {
@@ -205,7 +203,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                       CustomElevatedButton(
                         buttonText: AppTheme.forgotPasswordText,
                         onPressed: _forgotPassword,
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -214,6 +212,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
               _isGoogleLoading
                   ? CircularProgressIndicator()
                   : CustomElevatedButton(
+                      image: Image.asset("assets/images/google.png"),
                       onPressed: _isGoogleLoading ? () {} : _loginWithGoogle,
                       buttonText: AppTheme.googleSignInButtonText,
                     ),
@@ -221,6 +220,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
               _isFacebookLoading
                   ? CircularProgressIndicator()
                   : CustomElevatedButton(
+                      image: Image.asset("assets/images/facebook.jpeg"),
                       onPressed: _isFacebookLoading ? () {} : _loginWithFacebook,
                       buttonText: AppTheme.facebookSignInButtonText,
                     ),
@@ -230,7 +230,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                   CustomText(text: AppTheme.alreadyHaveAccountText),
                   CustomElevatedButton(
                     onPressed: _isLoading
-                        ? () {}
+                        ? () {} // Provide an empty function
                         : () {
                             Navigator.push(
                               context,

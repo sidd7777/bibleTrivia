@@ -19,6 +19,7 @@ void main() async {
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform); // Initialize Firebase
   FirebaseAuth.instance.setLanguageCode('en');
+
   print("Loading environment variables...");
   print(Config.serverClientId);
   print("Environment variables loaded.");

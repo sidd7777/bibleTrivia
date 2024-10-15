@@ -41,6 +41,7 @@ class AuthService {
           mobileNumber: mobileNumber,
         );
 
+        print('User registered and data saved in Firestore: ${user.uid}');
         return user;
       } else {
         print('User creation failed: User is null.');
@@ -73,7 +74,13 @@ class AuthService {
   Future<User?> signInWithGoogle() async {
     try {
       print('Initiating Google Sign-In...');
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Ensure the user signs out first to prompt account selection
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      await googleSignIn.signOut(); // This ensures the account selection prompt shows
+
+      // Initiate the sign-in process
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
         print('Google Sign-In was cancelled by the user.');
         return null;
@@ -110,6 +117,9 @@ class AuthService {
     try {
       print('Initiating Facebook Sign-In...');
       final LoginResult result = await FacebookAuth.instance.login();
+      print("*******************************************************");
+      // Log the result of the login attempt
+      print('Facebook login result: ${result.status}, Message: ${result.message}');
 
       if (result.status == LoginStatus.success) {
         final credential = FacebookAuthProvider.credential(result.accessToken!.tokenString);
@@ -133,48 +143,57 @@ class AuthService {
 
   /// Helper function to create user in Firestore if it doesn't exist
   Future<void> _checkAndCreateUserInFirestore(User user, String defaultUsername) async {
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    try {
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
 
-    if (!userDoc.exists) {
-      UserModel newUser = UserModel(
-        name: user.displayName ?? '',
-        userId: user.uid,
-        username: defaultUsername, // Default username for social logins
-        email: user.email ?? '',
-        password: '', // No password for social logins
-        mobileNumber: user.phoneNumber ?? '',
-        createdAt: DateTime.now(),
-        lastRechargeTime: DateTime.now(),
-      );
+      if (!userDoc.exists) {
+        UserModel newUser = UserModel(
+          name: user.displayName ?? '',
+          userId: user.uid,
+          username: defaultUsername, // Default username for social logins
+          email: user.email ?? '',
+          password: '', // No password for social logins
+          mobileNumber: user.phoneNumber ?? '',
+          createdAt: DateTime.now(),
+          lastRechargeTime: DateTime.now(),
+        );
 
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set(newUser.toMap());
-      print('New user data created in Firestore for user: ${user.uid}');
-    } else {
-      print('User already exists in Firestore: ${user.uid}');
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set(newUser.toMap());
+        print('New user data created in Firestore for user: ${user.uid}');
+      } else {
+        print('User already exists in Firestore: ${user.uid}');
+      }
+    } catch (e) {
+      print('Error checking or creating user in Firestore: $e');
     }
   }
 
   /// Helper function to create user in Firestore during registration
   Future<void> _createUserInFirestore({
     required User user,
+    String? name,
     required String username,
     required String email,
     required String hashedPassword,
     String? mobileNumber,
   }) async {
-    UserModel newUser = UserModel(
-      name: user.displayName ?? '',
-      userId: user.uid,
-      username: username,
-      email: email,
-      password: hashedPassword,
-      mobileNumber: mobileNumber,
-      createdAt: DateTime.now(),
-      lastRechargeTime: DateTime.now(),
-    );
+    try {
+      UserModel newUser = UserModel(
+        name: name ?? user.displayName ?? "",
+        userId: user.uid,
+        username: username,
+        email: email,
+        password: hashedPassword,
+        mobileNumber: mobileNumber,
+        createdAt: DateTime.now(),
+        lastRechargeTime: DateTime.now(),
+      );
 
-    await FirebaseFirestore.instance.collection('users').doc(user.uid).set(newUser.toMap());
-    print('User data stored in Firestore for user: ${user.uid}');
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set(newUser.toMap());
+      print('User data stored in Firestore for user: ${user.uid}');
+    } catch (e) {
+      print('Error storing user data in Firestore: $e');
+    }
   }
 
   /// Password hashing
@@ -210,7 +229,7 @@ class AuthService {
         case 'email-already-in-use':
           return 'The email is already in use.';
         default:
-          return 'An unknown error occurred.';
+          return 'An unknown error occurred: ${e.message}';
       }
     }
     return e.toString();
