@@ -45,8 +45,7 @@ class _QuizPageState extends State<QuizPage> {
       correctAnswer: "Paul",
     ),
     QuizQuestions(
-      question:
-          "How many days and nights did it rain when Noah was on the ark?",
+      question: "How many days and nights did it rain when Noah was on the ark?",
       options: ["10", "20", "40", "50"],
       correctAnswer: "40",
     ),
@@ -201,8 +200,7 @@ class _QuizPageState extends State<QuizPage> {
             const SizedBox(height: AppTheme.spaceSizeMedium),
             if (isAnswered)
               CustomElevatedButton(
-                buttonText:
-                    isLastQuestion ? "End Quiz" : nextQuestionButtonText,
+                buttonText: isLastQuestion ? "End Quiz" : nextQuestionButtonText,
                 onPressed: isLastQuestion ? handleQuiz : nextQuestion,
               ),
             if (!isLastQuestion)

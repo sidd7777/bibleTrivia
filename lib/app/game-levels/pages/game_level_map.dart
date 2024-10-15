@@ -14,8 +14,11 @@ class GameLevelMap extends StatefulWidget {
 }
 
 class GameLevelMapState extends State<GameLevelMap> {
-  final int levels = 50; // Number of levels
-  final int currentLevel = 22; // Current user level
+  static const int levels = 50; // Number of levels
+  static const int currentLevel = 22; // Current user level
+  static const double baseCanvasHeight = 1500;
+  static const double levelHeight = 60;
+
   final ScrollController _scrollController = ScrollController();
   bool scrolledToCurrentLevel = false;
   bool pathReady = false; // Path ready flag
@@ -24,13 +27,20 @@ class GameLevelMapState extends State<GameLevelMap> {
   @override
   void initState() {
     super.initState();
+    _startLoadingTimer();
+  }
 
-    // Start a timer to show the CircularProgressIndicator for a few milliseconds
+  @override
+  void dispose() {
+    _scrollController.dispose(); // Dispose the scroll controller
+    super.dispose();
+  }
+
+  void _startLoadingTimer() {
     Timer(const Duration(milliseconds: 100), () {
       setState(() {
         showLoading = false; // Hide the loading indicator
-        pathReady =
-            PathPainter.circleCenters.isNotEmpty; // Ensure path is ready
+        pathReady = PathPainter.circleCenters.isNotEmpty; // Ensure path is ready
         _scrollToCurrentLevel(); // Scroll to the current level once ready
       });
     });
@@ -39,8 +49,7 @@ class GameLevelMapState extends State<GameLevelMap> {
   // Scroll to the user's current level (only once)
   void _scrollToCurrentLevel() {
     if (!scrolledToCurrentLevel && PathPainter.circleCenters.isNotEmpty) {
-      final double scrollPosition =
-          PathPainter.circleCenters[currentLevel - 1].dy - 200;
+      final double scrollPosition = PathPainter.circleCenters[currentLevel - 1].dy - 200;
       _scrollController
           .animateTo(
         scrollPosition,
@@ -48,7 +57,9 @@ class GameLevelMapState extends State<GameLevelMap> {
         curve: Curves.easeInOut,
       )
           .then((_) {
-        scrolledToCurrentLevel = true; // Prevent future scrolls
+        setState(() {
+          scrolledToCurrentLevel = true; // Prevent future scrolls
+        });
       });
     }
   }
@@ -75,7 +86,7 @@ class GameLevelMapState extends State<GameLevelMap> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final double canvasHeight =
-                  1500 + (levels * 60); // Dynamic height
+                  baseCanvasHeight + (levels * levelHeight); // Dynamic height
 
               return SingleChildScrollView(
                 controller: _scrollController,
@@ -121,8 +132,7 @@ class GameLevelMapState extends State<GameLevelMap> {
                       if (PathPainter.circleCenters.isNotEmpty &&
                           currentLevel - 1 < PathPainter.circleCenters.length)
                         Positioned(
-                          left: PathPainter.circleCenters[currentLevel - 1].dx -
-                              65,
+                          left: PathPainter.circleCenters[currentLevel - 1].dx - 65,
                           top: PathPainter.circleCenters[currentLevel - 1].dy -
                               65, // Adjust the vertical position so it's on top
                           child: Container(
@@ -133,8 +143,7 @@ class GameLevelMapState extends State<GameLevelMap> {
                             child: const Icon(
                               Icons.account_circle_rounded, // User icon
                               size: 50,
-                              color: AppTheme
-                                  .iconColor, // Use AppTheme for icon color
+                              color: AppTheme.iconColor, // Use AppTheme for icon color
                             ),
                           ),
                         ),

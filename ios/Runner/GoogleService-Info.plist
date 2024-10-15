@@ -2,18 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>242728995309-gt157i2ufosn4gva9hbg4cc72m60s7hk.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.242728995309-gt157i2ufosn4gva9hbg4cc72m60s7hk</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>242728995309-ab4fcjb18gl917dqs0a462hlelclvu7o.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBgXjDH0js9DM5HFfPbjulre-WFVcSq9lM</string>
+	<string>AIzaSyBHwXRWMrD08_2pUSrdtxg7TV-0YiotzTc</string>
 	<key>GCM_SENDER_ID</key>
-	<string>617209734119</string>
+	<string>242728995309</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.bible-trivia</string>
 	<key>PROJECT_ID</key>
-	<string>quiz-app-smm-e5eac</string>
+	<string>quiz-smm</string>
 	<key>STORAGE_BUCKET</key>
-	<string>quiz-app-smm-e5eac.appspot.com</string>
+	<string>quiz-smm.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:617209734119:ios:2e0f8415c0b4e6dce1d342</string>
+	<string>1:242728995309:ios:b3f9e2ee4df4960f397fe4</string>
 </dict>
 </plist>

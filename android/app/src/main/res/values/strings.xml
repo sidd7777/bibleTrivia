@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <string name="app_name">SMM BIBLE TRIVIA</string>
+    <string name="facebook_app_id">3817816738506345</string>
+    <string name="fb_login_protocol_scheme">fb3817816738506345</string>
+    <string name="facebook_client_token">ddc172dd9a85ab3386cb60d16d764778</string>
+</resources>

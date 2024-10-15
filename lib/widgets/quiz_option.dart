@@ -8,7 +8,7 @@ class QuizOption extends StatelessWidget {
   final String? selectedOption;
   final bool isAnswered;
   final String correctAnswer;
-  final Function(String) onSelect; // Add a callback to handle selection
+  final Function(String) onSelect;
 
   const QuizOption({
     super.key,
@@ -16,7 +16,7 @@ class QuizOption extends StatelessWidget {
     required this.selectedOption,
     required this.isAnswered,
     required this.correctAnswer,
-    required this.onSelect, // Pass the callback
+    required this.onSelect,
   });
 
   Color getButtonColor() {
@@ -34,14 +34,12 @@ class QuizOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: isAnswered
-          ? null
-          : () => onSelect(option), // Call the callback on tap
+      onTap: isAnswered ? null : () => onSelect(option),
       child: Card(
         elevation: AppTheme.spaceSizeMedium,
         color: getButtonColor(),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(AppTheme.buttonBorderRadius),
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spaceSizeSmall),
@@ -50,11 +48,7 @@ class QuizOption extends StatelessWidget {
               Radio<String>(
                 value: option,
                 groupValue: selectedOption,
-                onChanged: isAnswered
-                    ? null
-                    : (value) {
-                        // Update selection if needed
-                      },
+                onChanged: isAnswered ? null : (value) {},
               ),
               Expanded(
                 child: Text(
