@@ -2,6 +2,7 @@
 .gradle/
 build/
 lib/core/utility/config.dart
+lib/firebase_options.dart
 # Local configuration file (sdk path, etc)
 local.properties
 
@@ -28,6 +29,7 @@ render.experimental.xml
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+GoogleService-Info.plist
 
 # Android Profiling
 *.hprof
