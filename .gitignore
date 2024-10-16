@@ -27,33 +27,30 @@ render.experimental.xml
 *.jks
 *.keystore
 
+ios/Runner/GoogleService-Info.plist
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 GoogleService-Info.plist
 
 # Android Profiling
 *.hprof
-<<<<<<< HEAD
 
 # Flutter specific files
 .flutter/
 .dart_tool/
 .packages
 .pub/
-#windows/flutter/
 
-# Exclude Windows build artifacts
+# Windows build artifacts
 windows/flutter/ephemeral/
 *.dll
 *.exe
 *.pdb
 
-# Exclude macOS build artifacts
+# macOS build artifacts
 macos/Flutter/ephemeral/
 *.dylib
 
-# Exclude Linux build artifacts
+# Linux build artifacts
 linux/flutter/ephemeral/
 *.so
-=======
->>>>>>> origin/main
