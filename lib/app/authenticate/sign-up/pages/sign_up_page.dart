@@ -111,10 +111,13 @@ class _SignUpPageState extends State<SignUpPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomText(
-              text: AppTheme.signUpTitle,
-              color: AppTheme.primaryColor,
-              fontSize: AppTheme.fontSizeLargeTitle,
-              fontWeight: FontWeight.bold,
+              text: AppTheme.signUpTitle, // Your title text
+              color: AppTheme.primaryColor, // App's primary color
+              fontSize: AppTheme.fontSizeLargeTitle, // Large font size for title
+              fontWeight: FontWeight.bold, // Bold font weight
+              textAlign: TextAlign.center, // Align text to center
+              letterSpacing: 1.2, // Slightly increase letter spacing for emphasis
+              height: 1.5, // Increase line height for readability if multiline
             ),
             const SizedBox(height: AppTheme.spaceSizeMedium),
             CustomTextField(
@@ -184,8 +187,12 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomText(
-                  text: AppTheme.alreadyHaveAccountText,
-                  color: AppTheme.primaryColor,
+                  text: AppTheme.alreadyHaveAccountText, // Your "Already have an account?" text
+                  color: AppTheme.primaryColor, // App's primary color
+                  fontSize: AppTheme.fontSizeRegular, // Optional: Default font size, can tweak
+                  fontWeight: FontWeight.normal, // Optional: Normal weight, can adjust to light
+                  textAlign: TextAlign.center, // Optional: Align text to center if needed
+                  letterSpacing: 0.5, // Optional: Slight letter spacing for readability
                 ),
                 CustomElevatedButton(
                   buttonText: AppTheme.loginText,

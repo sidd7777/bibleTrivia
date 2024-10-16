@@ -6,7 +6,7 @@ import '../../../core/app-theme/inherited_app_theme.dart';
 import '../../../main.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_button.dart';
-import '../model/quiz_questions.dart';
+import '../../model/quiz_questions.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});

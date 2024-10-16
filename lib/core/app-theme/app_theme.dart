@@ -50,6 +50,7 @@ class AppTheme {
   static const String facebookSignInFailedMessage = "Facebook sign-in failed. Please try again.";
   static const String forgotPasswordText = "Forgot Password?";
   static const String passwordMismatchMessage = "Passwords do not match. Please try again.";
+  static const String showSplashScreen = 'Show Splash Screen';
 
   // Colors
   static const Color primaryColor = Color(0xFF6200EA); // Purple

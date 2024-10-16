@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'app/authenticate/sign-in/pages/common_login_page.dart';
 import 'app/game-levels/pages/game_level_map.dart';
 import 'app/quiz/pages/quiz_page.dart';
+import 'app/splash-screen/pages/splash_screen.dart';
 import 'core/app-theme/app_theme.dart';
 import 'core/utility/config.dart';
 import 'firebase_options.dart';
@@ -124,6 +125,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const CommonLoginPage(),
+                      ),
+                    );
+                  },
+                ),
+                CustomElevatedButton(
+                  buttonText: AppTheme.showSplashScreen,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SplashScreen(),
                       ),
                     );
                   },
