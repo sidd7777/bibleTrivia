@@ -15,6 +15,17 @@ class AppTheme {
   static const String homeText = "Home";
   static const String gameLevelsText = "Game Levels";
   static const String confirmSelectionText = "Confirm Selection";
+  static const String nextQuestionText = "Next Question";
+  static const String endQuizText = "End Quiz";
+  static const String completedQuizText = "Quiz Completed!";
+  static const String yourScoreText = "Your Score is";
+  static const String noMoreQuestionsText = "No more questions available!";
+  static const String retryText = "Would you like to try again?";
+  static const String exitQuizTitle = "Exit Quiz";
+  static const String exitQuizMessage =
+      "Are you sure you want to exit the quiz? Your progress will not be saved.";
+  static const String quizCompletedText = "Quiz Completed! Well done!";
+  static const String userScoreText = "Your final score is:";
 
   // Login Page
   static const String loginTitle = 'Login';
@@ -23,8 +34,8 @@ class AppTheme {
   static const String confirmPasswordLabel = "Confirm Password";
   static const String loginWithEmailButton = 'Login with Email';
   static const String orText = 'OR';
-  static const String googleSignInButton = 'Sign in with Google';
-  static const String facebookSignInText = 'Sign in with Facebook';
+  static const String googleSignInButtonText = 'Sign in with Google';
+  static const String facebookSignInButtonText = 'Sign in with Facebook';
   static const String signUpTitle = 'Sign Up';
   static const String dontHaveAccountText = "Don't have an account?";
   static const String noAccountText = "No account?";
@@ -35,7 +46,14 @@ class AppTheme {
   static const String loginText = "Login";
   static const String okButtonText = 'OK';
   static const String loadingText = 'Loading...';
+  static const String forgotPasswordText = "Forgot Password?";
+  static const String passwordMismatchMessage = "Passwords do not match. Please try again.";
+  static const String loginFailedMessage = 'Login failed. Please try again.';
+  static const String accountCreationSuccessMessage = 'Account created successfully.';
+  static const String invalidEmailMessage = 'Please enter a valid email address.';
+  static const String emptyFieldMessage = 'This field cannot be empty.';
 
+  // Registration
   static const String nameLabel = 'Name';
   static const String usernameLabel = 'Username';
   static const String mobileNumberLabel = 'Mobile Number';
@@ -45,12 +63,15 @@ class AppTheme {
   static const String errorDialogTitle = 'Error';
   static const String signUpRedirectText = 'Don\'t have an account? Sign Up';
   static const String googleSignInFailedMessage = 'Google sign-in failed.';
-  static const String googleSignInButtonText = 'Sign in with Google';
-  static const String facebookSignInButtonText = "Sign in with Facebook";
   static const String facebookSignInFailedMessage = "Facebook sign-in failed. Please try again.";
-  static const String forgotPasswordText = "Forgot Password?";
-  static const String passwordMismatchMessage = "Passwords do not match. Please try again.";
-  static const String showSplashScreen = 'Show Splash Screen';
+  static const String userAlreadyExistsMessage = 'This email is already in use.';
+
+  // Quiz Results
+  static const String quizCompletedMessage = 'Quiz Completed. Well done!';
+  static const String scoreText = 'Score';
+  static const String retryQuizText = 'Retry Quiz';
+  static const String quizSummaryText = 'Here is a summary of your quiz results';
+  static const String performanceFeedbackText = 'Your performance was outstanding!';
 
   // Colors
   static const Color primaryColor = Color(0xFF6200EA); // Purple
@@ -66,7 +87,7 @@ class AppTheme {
   static const Color optionCardColor = Color(0xFF303030); // Dark grey for option cards
   static const Color dialogTitleColor = Colors.black;
   static const Color dialogContentColor = Colors.black;
-  static const Color textColor = Colors.black;
+  static const Color textColor = Colors.purpleAccent;
 
   // Sizes
   static const double buttonPaddingVertical = 15.0;
@@ -95,6 +116,4 @@ class AppTheme {
   static const double fontSizeTitle = 36.0;
   static const double fontSizeLargeTitle = 40.0;
   static const double fontSizeExtremeLargeTitle = 56.0;
-
-// Add any additional theme-related properties or methods if needed
 }

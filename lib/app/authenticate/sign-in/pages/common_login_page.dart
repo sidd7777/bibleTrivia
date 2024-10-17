@@ -1,4 +1,3 @@
-import 'package:bible_trivia/main.dart';
 import 'package:bible_trivia/widgets/custom_error_dialog.dart';
 import 'package:bible_trivia/widgets/custom_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/app-theme/app_theme.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/custom_text_field.dart';
+import '../../../homepage/pages/home_page.dart';
 import '../../auth/auth_service.dart';
 import '../../sign-up/pages/sign_up_page.dart';
 
@@ -48,11 +48,11 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
         email,
         password,
       );
-      if (user != null) {
+      if (user != null && mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => MyHomePage(
+            builder: (context) => HomePage(
               title: AppTheme.appBarTitleText,
             ),
           ),
@@ -109,11 +109,11 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
     });
 
     User? user = await authService.signInWithFacebook();
-    if (user != null) {
+    if (user != null && mounted) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MyHomePage(
+          builder: (context) => HomePage(
             title: AppTheme.appBarTitleText,
           ),
         ),
@@ -133,11 +133,11 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
     });
 
     User? user = await authService.signInWithGoogle();
-    if (user != null) {
+    if (user != null && mounted) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MyHomePage(
+          builder: (context) => HomePage(
             title: AppTheme.appBarTitleText,
           ),
         ),

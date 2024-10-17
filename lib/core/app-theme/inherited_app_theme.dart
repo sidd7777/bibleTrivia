@@ -19,7 +19,7 @@ class InheritedAppTheme {
   // App Bar Style
   static TextStyle appBarTextStyle = const TextStyle(
     fontSize: AppTheme.fontSizeSubTitle,
-    color: AppTheme.textColor,
+    color: AppTheme.backgroundColor,
     fontWeight: FontWeight.bold,
   );
 
@@ -57,7 +57,7 @@ class InheritedAppTheme {
   static TextStyle scoreTextStyle = const TextStyle(
     fontSize: AppTheme.fontSizeNormal,
     fontWeight: FontWeight.bold,
-    color: AppTheme.textColor,
+    color: AppTheme.buttonTextColor,
   );
 
   static TextStyle questionTextStyle = const TextStyle(
@@ -66,9 +66,9 @@ class InheritedAppTheme {
     color: AppTheme.textColor,
   );
 
-  static TextStyle optionTextStyle = const TextStyle(
+  static TextStyle optionTextStyle = TextStyle(
     fontSize: AppTheme.fontSizeNormal,
-    color: AppTheme.textColor,
+    color: AppTheme.buttonTextColor, // Inner text color
   );
 
   static const TextStyle inputLabelTextStyle = TextStyle(

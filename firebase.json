@@ -1,1 +1,24 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"quiz-smm","appId":"1:242728995309:android:1fe94662a9ef3897397fe4","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"quiz-smm","configurations":{"android":"1:242728995309:android:1fe94662a9ef3897397fe4","ios":"1:242728995309:ios:2f159abd77113030397fe4","web":"1:242728995309:web:4667e320f821686e397fe4","windows":"1:242728995309:web:97a2bf7548171352397fe4"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "appId": "1:242728995309:android:1fe94662a9ef3897397fe4",
+          "fileOutput": "android/app/google-services.json",
+          "projectId": "quiz-smm"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "configurations": {
+            "android": "1:242728995309:android:1fe94662a9ef3897397fe4",
+            "ios": "1:242728995309:ios:2f159abd77113030397fe4",
+            "web": "1:242728995309:web:4667e320f821686e397fe4",
+            "windows": "1:242728995309:web:97a2bf7548171352397fe4"
+          },
+          "projectId": "quiz-smm"
+        }
+      }
+    }
+  }
+}

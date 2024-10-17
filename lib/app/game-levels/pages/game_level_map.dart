@@ -15,7 +15,7 @@ class GameLevelMap extends StatefulWidget {
 
 class GameLevelMapState extends State<GameLevelMap> {
   static const int levels = 50; // Number of levels
-  static const int currentLevel = 22; // Current user level
+  static const int currentLevel = 1; // Current user level
   static const double baseCanvasHeight = 1500;
   static const double levelHeight = 60;
 

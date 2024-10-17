@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../app/homepage/pages/home_page.dart';
 import '../core/app-theme/app_theme.dart';
 import '../core/app-theme/inherited_app_theme.dart';
-import '../main.dart';
 import 'custom_list_tile.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -16,13 +16,11 @@ class AppDrawer extends StatelessWidget {
         children: <Widget>[
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: AppTheme
-                  .drawerHeaderBackgroundColor, // Use AppTheme for background
+              color: AppTheme.drawerHeaderBackgroundColor, // Use AppTheme for background
             ),
             child: Text(
               AppTheme.quizMenuText,
-              style: InheritedAppTheme
-                  .drawerHeaderTextStyle, // Use AppTheme for text style
+              style: InheritedAppTheme.drawerHeaderTextStyle, // Use AppTheme for text style
             ),
           ),
           CustomListTile(
@@ -32,7 +30,7 @@ class AppDrawer extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MyHomePage(
+                  builder: (context) => const HomePage(
                     title: AppTheme.appBarTitleText,
                   ),
                 ),

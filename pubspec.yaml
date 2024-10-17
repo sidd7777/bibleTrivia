@@ -32,6 +32,8 @@ flutter:
   assets:
     - assets/images/google.png
     - assets/images/facebook.jpeg
+    - assets/images/flutter_new_logo.png
+
 
 
 

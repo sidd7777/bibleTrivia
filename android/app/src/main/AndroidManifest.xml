@@ -5,12 +5,14 @@
     <!-- Required Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <application
         android:label="bible_trivia"
-        android:icon="@mipmap/ic_launcher"
-        android:theme="@style/LaunchTheme">
+        android:icon="@mipmap/flutter_new_logo"
+        android:theme="@style/LaunchTheme"
+        android:enableOnBackInvokedCallback="true">
+
 
         <!-- Meta-data for Google Sign-In -->
         <meta-data
@@ -80,11 +82,8 @@
         </activity>
     </application>
 
-<!--    &lt;!&ndash; Required Intent for Processing Text (Optional) &ndash;&gt;-->
-<!--    <queries>-->
-<!--        <intent>-->
-<!--            <action android:name="android.intent.action.PROCESS_TEXT" />-->
-<!--            <data android:mimeType="text/plain" />-->
-<!--        </intent>-->
-<!--    </queries>-->
+    <queries>
+        <!-- Declare the Facebook app package to allow interactions -->
+        <package android:name="com.facebook.katana" />
+    </queries>
 </manifest>

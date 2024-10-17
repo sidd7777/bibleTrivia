@@ -1,9 +1,10 @@
+import 'package:bible_trivia/app/homepage/pages/home_page.dart';
+import 'package:bible_trivia/widgets/progress_bar.dart'; // Import your ProgressBar widget
 import 'package:bible_trivia/widgets/quiz_option.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/app-theme/app_theme.dart';
 import '../../../core/app-theme/inherited_app_theme.dart';
-import '../../../main.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_button.dart';
 import '../../model/quiz_questions.dart';
@@ -15,13 +16,17 @@ class QuizPage extends StatefulWidget {
   State<QuizPage> createState() => _QuizPageState();
 }
 
-class _QuizPageState extends State<QuizPage> {
-  String nextQuestionButtonText = "Next Question";
+class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin {
+  String nextQuestionButtonText = AppTheme.nextQuestionText;
   int currentQuestionIndex = 0;
   String? selectedOption;
   bool isAnswered = false;
   int score = 0;
-  bool showConfirmButton = true; // New variable to control button visibility
+  bool showConfirmButton = true;
+
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   final List<QuizQuestions> questions = [
     QuizQuestions(
@@ -51,11 +56,44 @@ class _QuizPageState extends State<QuizPage> {
     ),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeIn,
+      ),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeIn,
+    ));
+
+    // Start the slide-in animation for the first question automatically
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   void checkAnswer(String answer) {
     setState(() {
       selectedOption = answer;
       isAnswered = true;
-      showConfirmButton = false; // Hide button after selection
+      showConfirmButton = false;
       if (answer == questions[currentQuestionIndex].correctAnswer) {
         score++;
       }
@@ -63,31 +101,42 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void nextQuestion() {
-    setState(() {
-      if (currentQuestionIndex < questions.length - 1) {
-        currentQuestionIndex++;
-        resetQuestionState();
-        showConfirmButton = true; // Show button for the next question
-      } else {
-        nextQuestionButtonText = "End Quiz"; // Change button text
-      }
-    });
+    if (currentQuestionIndex < questions.length - 1) {
+      // Fade out the current question
+      _animationController.reverse().then((_) {
+        setState(() {
+          currentQuestionIndex++;
+          resetQuestionState();
+          showConfirmButton = true;
+        });
+
+        // Slide the next question in
+        _animationController.forward();
+      });
+    } else {
+      nextQuestionButtonText = AppTheme.endQuizText;
+    }
   }
 
   void resetQuestionState() {
-    selectedOption = null; // Reset selected option
-    isAnswered = false; // Reset answered status
-    nextQuestionButtonText = "Next Question";
+    selectedOption = null;
+    isAnswered = false;
+    nextQuestionButtonText = AppTheme.nextQuestionText;
   }
 
-  void handleQuiz() {
+  void handleQuizCompletion() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Quiz Completed. Your Score is $score")),
+      SnackBar(
+        content: Text(
+          "${AppTheme.quizCompletedText} ${AppTheme.userScoreText} $score",
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => const MyHomePage(
+        builder: (context) => const HomePage(
           title: AppTheme.appBarTitleText,
         ),
       ),
@@ -95,38 +144,29 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 
-  Future<void> exitQuiz() async {
-    if (!mounted) return;
+  Future<bool> _onWillPop() async {
+    final shouldExit = await _showExitDialog();
+    return shouldExit ?? false; // Return true or false to pop or not
+  }
 
-    final exit = await showDialog(
+  Future<bool?> _showExitDialog() async {
+    return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(AppTheme.exitQuizText),
-        content: const Text(AppTheme.confirmationExitQuiz),
+        title: Text(AppTheme.exitQuizTitle),
+        content: Text(AppTheme.exitQuizMessage),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text(AppTheme.cancelText),
+            onPressed: () => Navigator.of(context).pop(false), // User cancels
+            child: Text(AppTheme.cancelText),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text(AppTheme.exitText),
+            onPressed: () => Navigator.of(context).pop(true), // User confirms exit
+            child: Text(AppTheme.exitText),
           ),
         ],
       ),
     );
-
-    if (mounted && exit == true) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const MyHomePage(
-            title: AppTheme.appBarTitleText,
-          ),
-        ),
-        (Route<dynamic> route) => false,
-      );
-    }
   }
 
   @override
@@ -146,73 +186,101 @@ class _QuizPageState extends State<QuizPage> {
     final currentQuestion = questions[currentQuestionIndex];
     final isLastQuestion = currentQuestionIndex == questions.length - 1;
 
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: AppTheme.appBarTitleText,
-        showDrawer: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(AppTheme.spaceSizeSmall),
-        child: Column(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Current User Score: $score',
-                    style: InheritedAppTheme.scoreTextStyle,
-                  ),
-                  const SizedBox(height: AppTheme.spaceSizeMedium),
-                  Text(
-                    currentQuestion.question,
-                    style: InheritedAppTheme.questionTextStyle,
-                  ),
-                  const SizedBox(height: AppTheme.spaceSizeMedium),
-                  ...currentQuestion.options.map((option) {
-                    return QuizOption(
-                      option: option,
-                      selectedOption: selectedOption,
-                      isAnswered: isAnswered,
-                      correctAnswer: currentQuestion.correctAnswer,
-                      onSelect: (selected) {
-                        setState(() {
-                          selectedOption = selected;
-                        });
-                      },
-                    );
-                  }),
-                ],
+    // Calculate progress
+    double progress = (currentQuestionIndex + 1) / questions.length;
+
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          title: AppTheme.appBarTitleText,
+          showDrawer: false,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(AppTheme.spaceSizeSmall),
+          child: Column(
+            children: [
+              // Use your ProgressBar widget
+              ProgressBar(progress: progress),
+              const SizedBox(height: AppTheme.spaceSizeSmall),
+              Expanded(
+                child: Stack(
+                  children: [
+                    FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: Container(), // Placeholder for fading out
+                    ),
+                    SlideTransition(
+                      position: _slideAnimation,
+                      child: Column(
+                        key: ValueKey<int>(currentQuestionIndex),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '${AppTheme.userScoreText} $score',
+                            style: InheritedAppTheme.scoreTextStyle,
+                          ),
+                          const SizedBox(height: AppTheme.spaceSizeMedium),
+                          Text(
+                            currentQuestion.question,
+                            style: InheritedAppTheme.questionTextStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppTheme.spaceSizeMedium),
+                          ...currentQuestion.options.map(
+                            (option) {
+                              return QuizOption(
+                                option: option,
+                                selectedOption: selectedOption,
+                                isAnswered: isAnswered,
+                                correctAnswer: currentQuestion.correctAnswer,
+                                onSelect: (selected) {
+                                  setState(() {
+                                    selectedOption = selected;
+                                  });
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            if (showConfirmButton)
-              CustomElevatedButton(
-                buttonText: AppTheme.confirmSelectionText,
-                onPressed: (isAnswered || selectedOption == null)
-                    ? () {}
-                    : () {
-                        checkAnswer(selectedOption!);
-                      },
-                backgroundColor: (isAnswered || selectedOption == null)
-                    ? Colors.grey
-                    : AppTheme.buttonBackgroundColor,
-              ),
-            const SizedBox(height: AppTheme.spaceSizeMedium),
-            if (isAnswered)
-              CustomElevatedButton(
-                buttonText: isLastQuestion ? "End Quiz" : nextQuestionButtonText,
-                onPressed: isLastQuestion ? handleQuiz : nextQuestion,
-              ),
-            if (!isLastQuestion)
+              if (showConfirmButton)
+                CustomElevatedButton(
+                  buttonText: AppTheme.confirmSelectionText,
+                  onPressed: (isAnswered || selectedOption == null)
+                      ? () {}
+                      : () {
+                          checkAnswer(selectedOption!);
+                        },
+                  backgroundColor: (isAnswered || selectedOption == null)
+                      ? Colors.grey
+                      : AppTheme.buttonBackgroundColor,
+                ),
+              const SizedBox(height: AppTheme.spaceSizeMedium),
+              if (isAnswered)
+                CustomElevatedButton(
+                  buttonText: isLastQuestion ? AppTheme.exitQuizText : nextQuestionButtonText,
+                  onPressed: isLastQuestion ? handleQuizCompletion : nextQuestion,
+                ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: CustomElevatedButton(
-                  buttonText: AppTheme.exitQuizText,
-                  onPressed: exitQuiz,
-                  textColor: Colors.white,
+                  buttonText: AppTheme.endQuizText,
+                  onPressed: () async {
+                    final shouldExit = await _showExitDialog();
+                    if (shouldExit == true) {
+                      Navigator.pop(context); // Exit the quiz
+                    }
+                  },
+                  backgroundColor: AppTheme.buttonBackgroundColor,
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/app-theme/app_theme.dart';
 import '../../../core/app-theme/inherited_app_theme.dart';
-import '../../../main.dart';
+import '../../homepage/pages/home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -19,9 +19,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void initState() {
     super.initState();
 
-    // Animation controller and animation for fade-in and fade-out
+    // Animation controller for fade-in and fade-out
     _controller = AnimationController(
-      duration: const Duration(seconds: 4),
+      duration: const Duration(seconds: 5),
       vsync: this,
     );
 
@@ -43,12 +43,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _controller.forward();
 
     // Navigate back to the home page after animation completes
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 5), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const MyHomePage(title: AppTheme.appBarTitleText),
+            builder: (context) => const HomePage(title: AppTheme.appBarTitleText),
           ),
         );
       }
@@ -64,29 +64,27 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor, // Updated to use AppTheme
+      backgroundColor: AppTheme.backgroundColor,
       body: Center(
         child: Opacity(
-          opacity: _animation.value, // Apply both fade-in and fade-out animations
+          opacity: _animation.value,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Updated to use theme-based color for the icon
-              Icon(
-                Icons.flutter_dash_sharp, // Replace with your app logo
-                color: AppTheme.primaryColor, // Use AppTheme primary color
-                size: 200.0,
+              Image.asset(
+                'assets/images/flutter_new_logo.png', // Replace with your app logo path
+                width: 200.0,
+                height: 200.0,
               ),
               const SizedBox(height: AppTheme.spaceSizeMedium),
-              // Splash screen text with inherited theme styles
               Text(
                 'Bible Trivia',
                 style: InheritedAppTheme.headerTextStyle.copyWith(
-                  // Updated to use header text style
-                  color:
-                      AppTheme.buttonTextColor, // Using button text color as it matches the theme
+                  color: AppTheme.buttonTextColor,
                 ),
               ),
+              const SizedBox(height: AppTheme.spaceSizeMedium),
+              const CircularProgressIndicator(), // Loading indicator
             ],
           ),
         ),

@@ -6,8 +6,8 @@ import 'package:bible_trivia/widgets/custom_text.dart'; // Import CustomText
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../main.dart';
 import '../../../../widgets/custom_text_field.dart';
+import '../../../homepage/pages/home_page.dart';
 import '../../auth/auth_service.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -68,12 +68,12 @@ class _SignUpPageState extends State<SignUpPage> {
     try {
       User? user = await authService.registerWithEmailPassword(
           context, name, email, password, username, mobileNumber);
-      if (user != null) {
+      if (user != null && mounted) {
         print('User registered successfully: ${user.uid}');
         // Use pushReplacement to navigate to HomePage
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const MyHomePage(
+            builder: (context) => const HomePage(
               title: AppTheme.appBarTitleText,
             ),
           ),
