@@ -8,6 +8,7 @@ import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/custom_text_field.dart';
 import '../../../homepage/pages/home_page.dart';
 import '../../auth/auth_service.dart';
+import '../../forgot-password/widgets/forgot_password_dialog.dart';
 import '../../sign-up/pages/sign_up_page.dart';
 
 class CommonLoginPage extends StatefulWidget {
@@ -25,6 +26,8 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
   bool _isLoading = false;
   bool _isGoogleLoading = false;
   bool _isFacebookLoading = false;
+  String? _emailError;
+  String? _passwordError;
 
   @override
   void dispose() {
@@ -36,29 +39,33 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
   void _login() async {
     setState(() {
       _isLoading = true;
+      _emailError = null;
+      _passwordError = null;
     });
 
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    // Input validation
     if (_validateInputs(email, password)) {
-      User? user = await authService.signInWithEmailPassword(
-        context,
-        email,
-        password,
-      );
-      if (user != null && mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(
-              title: AppTheme.appBarTitleText,
+      try {
+        User? user = await authService.signInWithEmailPassword(context, email, password);
+        if (user != null && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Login successful!")),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(
+                title: AppTheme.appBarTitleText,
+              ),
             ),
-          ),
-        );
-      } else {
-        _showErrorDialog(AppTheme.registrationFailedMessage);
+          );
+        } else {
+          _showErrorDialog(AppTheme.registrationFailedMessage);
+        }
+      } catch (e) {
+        _showErrorDialog("An error occurred: ${e.toString()}");
       }
     }
 
@@ -68,24 +75,26 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
   }
 
   bool _validateInputs(String email, String password) {
-    if (email.isEmpty || password.isEmpty) {
-      _showErrorDialog(AppTheme.allFieldsRequiredMessage);
-      return false;
+    bool isValid = true;
+
+    if (email.isEmpty) {
+      _emailError = "Please enter your email.";
+      isValid = false;
+    } else if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(email)) {
+      _emailError = "Please enter a valid email address.";
+      isValid = false;
     }
 
-    // Email format validation
-    if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(email)) {
-      _showErrorDialog("Please enter a valid email address.");
-      return false;
+    if (password.isEmpty) {
+      _passwordError = "Please enter your password.";
+      isValid = false;
+    } else if (password.length < 6) {
+      _passwordError = "Password must be at least 6 characters long.";
+      isValid = false;
     }
 
-    // Password validation (e.g., minimum length 6 characters)
-    if (password.length < 6) {
-      _showErrorDialog("Password must be at least 6 characters long.");
-      return false;
-    }
-
-    return true;
+    setState(() {}); // Update state to reflect error messages
+    return isValid;
   }
 
   void _showErrorDialog(String message) {
@@ -108,23 +117,27 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
       _isFacebookLoading = true;
     });
 
-    User? user = await authService.signInWithFacebook();
-    if (user != null && mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(
-            title: AppTheme.appBarTitleText,
+    try {
+      User? user = await authService.signInWithFacebook();
+      if (user != null && mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(
+              title: AppTheme.appBarTitleText,
+            ),
           ),
-        ),
-      );
-    } else {
-      _showErrorDialog(AppTheme.facebookSignInFailedMessage);
+        );
+      } else {
+        _showErrorDialog(AppTheme.facebookSignInFailedMessage);
+      }
+    } catch (e) {
+      _showErrorDialog("Facebook login failed: ${e.toString()}");
+    } finally {
+      setState(() {
+        _isFacebookLoading = false;
+      });
     }
-
-    setState(() {
-      _isFacebookLoading = false;
-    });
   }
 
   Future<void> _loginWithGoogle() async {
@@ -132,28 +145,64 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
       _isGoogleLoading = true;
     });
 
-    User? user = await authService.signInWithGoogle();
-    if (user != null && mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(
-            title: AppTheme.appBarTitleText,
+    try {
+      User? user = await authService.signInWithGoogle();
+      if (user != null && mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(
+              title: AppTheme.appBarTitleText,
+            ),
           ),
-        ),
-      );
-    } else {
-      _showErrorDialog(AppTheme.googleSignInFailedMessage);
+        );
+      } else {
+        _showErrorDialog(AppTheme.googleSignInFailedMessage);
+      }
+    } catch (e) {
+      _showErrorDialog("Google login failed: ${e.toString()}");
+    } finally {
+      setState(() {
+        _isGoogleLoading = false;
+      });
     }
-
-    setState(() {
-      _isGoogleLoading = false;
-    });
   }
 
   void _forgotPassword() {
-    // Placeholder for forgot password functionality
-    _showErrorDialog("Forgot Password functionality not implemented yet.");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ForgotPasswordDialog(
+          onClose: () => Navigator.of(context).pop(),
+        );
+      },
+    );
+  }
+
+  // New method to build Google login button
+  Widget _buildGoogleButton() {
+    return _isGoogleLoading
+        ? CircularProgressIndicator()
+        : CustomElevatedButton(
+            image: Image.asset("assets/images/google.png"),
+            onPressed: () {
+              _isGoogleLoading ? null : _loginWithGoogle();
+            },
+            buttonText: AppTheme.googleSignInButtonText,
+          );
+  }
+
+  // New method to build Facebook login button
+  Widget _buildFacebookButton() {
+    return _isFacebookLoading
+        ? CircularProgressIndicator()
+        : CustomElevatedButton(
+            image: Image.asset("assets/images/facebook.jpeg"),
+            onPressed: () {
+              _isFacebookLoading ? null : _loginWithFacebook();
+            },
+            buttonText: AppTheme.facebookSignInButtonText,
+          );
   }
 
   @override
@@ -165,7 +214,6 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
           padding: EdgeInsets.all(AppTheme.spaceSizeMedium),
           child: Column(
             children: [
-              // Card for email and password input
               Card(
                 elevation: AppTheme.spaceSizeSmall,
                 child: Padding(
@@ -176,6 +224,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                         controller: _emailController,
                         labelText: AppTheme.emailLabel,
                         keyboardType: TextInputType.emailAddress,
+                        errorText: _emailError, // Display error for email
                       ),
                       SizedBox(height: AppTheme.spaceSizeMedium),
                       CustomTextField(
@@ -192,12 +241,15 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                             });
                           },
                         ),
+                        errorText: _passwordError, // Display error for password
                       ),
                       SizedBox(height: AppTheme.spaceSizeMedium),
                       _isLoading
                           ? CircularProgressIndicator()
                           : CustomElevatedButton(
-                              onPressed: _isLoading ? () {} : _login,
+                              onPressed: () {
+                                _isLoading ? null : _login();
+                              },
                               buttonText: AppTheme.loginText,
                             ),
                       CustomElevatedButton(
@@ -208,30 +260,20 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                   ),
                 ),
               ),
-
-              _isGoogleLoading
-                  ? CircularProgressIndicator()
-                  : CustomElevatedButton(
-                      image: Image.asset("assets/images/google.png"),
-                      onPressed: _isGoogleLoading ? () {} : _loginWithGoogle,
-                      buttonText: AppTheme.googleSignInButtonText,
-                    ),
-
-              _isFacebookLoading
-                  ? CircularProgressIndicator()
-                  : CustomElevatedButton(
-                      image: Image.asset("assets/images/facebook.jpeg"),
-                      onPressed: _isFacebookLoading ? () {} : _loginWithFacebook,
-                      buttonText: AppTheme.facebookSignInButtonText,
-                    ),
+              SizedBox(height: AppTheme.spaceSizeMedium), // Spacing between card and buttons
+              _buildGoogleButton(),
+              SizedBox(height: AppTheme.spaceSizeMedium), // Spacing between buttons
+              _buildFacebookButton(),
+              SizedBox(height: AppTheme.spaceSizeMedium), // Additional spacing
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CustomText(text: AppTheme.alreadyHaveAccountText),
                   CustomElevatedButton(
                     onPressed: _isLoading
-                        ? () {} // Provide an empty function
+                        ? () {} // No-op function to disable action when loading
                         : () {
+                            // If _isLoading is false, navigate to the SignUpPage
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -239,7 +281,8 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                               ),
                             );
                           },
-                    buttonText: AppTheme.signUpButtonText, // Use the sign-up redirect text
+                    buttonText: AppTheme.signUpButtonText,
+                    isLoading: _isLoading, // Pass the loading state to the button
                   ),
                 ],
               ),

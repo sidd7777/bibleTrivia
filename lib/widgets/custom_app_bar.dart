@@ -8,10 +8,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.title,
     required this.showDrawer,
+    this.actions, // Optional actions for the AppBar
+    this.centerTitle = true, // Optional parameter for title alignment
+    this.elevation = 4.0, // Default elevation value
   });
 
   final String title;
   final bool showDrawer;
+  final List<Widget>? actions; // Optional list of action widgets
+  final bool centerTitle; // Optional parameter for title alignment
+  final double elevation; // Elevation of the AppBar
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +27,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: InheritedAppTheme.appBarTextStyle, // Use your custom text style
       ),
+      centerTitle: centerTitle, // Center the title based on the parameter
       leading: showDrawer
           ? Builder(
               builder: (context) => IconButton(
@@ -32,6 +39,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             )
           : null,
       automaticallyImplyLeading: false,
+      actions: actions, // Add action buttons if provided
+      elevation: elevation, // Set elevation
     );
   }
 

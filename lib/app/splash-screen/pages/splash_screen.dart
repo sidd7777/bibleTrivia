@@ -40,19 +40,21 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         setState(() {});
       });
 
-    _controller.forward();
+    _controller
+        .forward()
+        .then((_) => navigateToHome()); // Call navigation after animation completes
+  }
 
-    // Navigate back to the home page after animation completes
-    Future.delayed(const Duration(seconds: 5), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomePage(title: AppTheme.appBarTitleText),
-          ),
-        );
-      }
-    });
+  Future<void> navigateToHome() async {
+    await Future.delayed(const Duration(seconds: 0)); // Just a placeholder, can adjust if needed
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(title: AppTheme.appBarTitleText),
+        ),
+      );
+    }
   }
 
   @override
@@ -73,8 +75,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             children: [
               Image.asset(
                 'assets/images/flutter_new_logo.png', // Replace with your app logo path
-                width: 200.0,
-                height: 200.0,
+                width: 250.0,
+                height: 250.0,
+                errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.error), // Error handling for image loading
               ),
               const SizedBox(height: AppTheme.spaceSizeMedium),
               Text(

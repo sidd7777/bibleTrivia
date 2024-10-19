@@ -20,14 +20,14 @@ class GameLevelMapState extends State<GameLevelMap> {
   static const double levelHeight = 60;
 
   final ScrollController _scrollController = ScrollController();
-  bool scrolledToCurrentLevel = false;
+  bool scrolledToCurrentLevel = false; // Flag to prevent multiple scrolls
   bool pathReady = false; // Path ready flag
   bool showLoading = true; // Show loading initially
 
   @override
   void initState() {
     super.initState();
-    _startLoadingTimer();
+    _checkPathReady();
   }
 
   @override
@@ -36,13 +36,13 @@ class GameLevelMapState extends State<GameLevelMap> {
     super.dispose();
   }
 
-  void _startLoadingTimer() {
-    Timer(const Duration(milliseconds: 100), () {
-      setState(() {
-        showLoading = false; // Hide the loading indicator
-        pathReady = PathPainter.circleCenters.isNotEmpty; // Ensure path is ready
-        _scrollToCurrentLevel(); // Scroll to the current level once ready
-      });
+  // Simulate an async operation to check if paths are ready
+  void _checkPathReady() async {
+    await Future.delayed(const Duration(milliseconds: 100)); // Simulate delay
+    setState(() {
+      showLoading = false; // Hide the loading indicator
+      pathReady = PathPainter.circleCenters.isNotEmpty; // Ensure path is ready
+      _scrollToCurrentLevel(); // Scroll to the current level once ready
     });
   }
 
@@ -129,8 +129,7 @@ class GameLevelMapState extends State<GameLevelMap> {
                         },
                       ),
                       // Display user icon at the current level (if circleCenters is available)
-                      if (PathPainter.circleCenters.isNotEmpty &&
-                          currentLevel - 1 < PathPainter.circleCenters.length)
+                      if (pathReady && currentLevel - 1 < PathPainter.circleCenters.length)
                         Positioned(
                           left: PathPainter.circleCenters[currentLevel - 1].dx - 65,
                           top: PathPainter.circleCenters[currentLevel - 1].dy -

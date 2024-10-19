@@ -11,6 +11,19 @@ import '../../model/user_model.dart';
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      print('Attempting to send password reset email to: $email');
+
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+
+      print('Password reset email successfully sent to: $email');
+    } catch (error) {
+      print('Error occurred while sending password reset email to $email: $error');
+      throw error.toString();
+    }
+  }
+
   /// Register user using email and password
   Future<User?> registerWithEmailPassword(BuildContext context, String name, String email,
       String password, String username, String? mobileNumber) async {

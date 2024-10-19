@@ -22,6 +22,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    final double padding = MediaQuery.of(context).size.width * 0.1; // Responsive padding
+
     return Scaffold(
       appBar: CustomAppBar(
         title: widget.title,
@@ -31,7 +33,7 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(AppTheme.spaceSizeLarge),
+            padding: EdgeInsets.all(padding),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -67,33 +69,52 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _navigateToQuiz() {
-    Navigator.push(
-      context,
-      SlidePageTransition(
-        page: const QuizPage(),
-        duration: const Duration(seconds: 1), // Set duration for the transition
-      ),
-    );
+  void _navigateToQuiz() async {
+    try {
+      await Navigator.push(
+        context,
+        SlidePageTransition(
+          page: const QuizPage(),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    } catch (e) {
+      // Handle any errors that may occur during navigation
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to load quiz page')),
+      );
+    }
   }
 
-  void _navigateToGameLevelMap() {
-    Navigator.push(
-      context,
-      SlidePageTransition(
-        page: const GameLevelMap(),
-        duration: const Duration(seconds: 1), // Set duration for 1 second
-      ),
-    );
+  void _navigateToGameLevelMap() async {
+    try {
+      await Navigator.push(
+        context,
+        SlidePageTransition(
+          page: const GameLevelMap(),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to load game level map')),
+      );
+    }
   }
 
-  void _navigateToLogin() {
-    Navigator.push(
-      context,
-      SlidePageTransition(
-        page: const CommonLoginPage(),
-        duration: const Duration(seconds: 1), // Set duration for 1 second
-      ),
-    );
+  void _navigateToLogin() async {
+    try {
+      await Navigator.push(
+        context,
+        SlidePageTransition(
+          page: const CommonLoginPage(),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to load login page')),
+      );
+    }
   }
 }

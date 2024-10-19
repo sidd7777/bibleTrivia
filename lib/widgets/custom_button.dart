@@ -2,14 +2,15 @@ import 'package:bible_trivia/core/app-theme/app_theme.dart';
 import 'package:bible_trivia/core/app-theme/inherited_app_theme.dart';
 import 'package:flutter/material.dart';
 
-class CustomElevatedButton extends StatelessWidget {
+class CustomElevatedButton extends StatefulWidget {
   final String buttonText;
   final VoidCallback onPressed; // This is now required
-  final Color? backgroundColor;
-  final Color? textColor;
-  final Color? borderColor;
-  final Icon? icon;
-  final Image? image;
+  final Color? backgroundColor; // Gradient starting color
+  final Color? textColor; // Text color
+  final Color? borderColor; // Border color
+  final Icon? icon; // Optional icon
+  final Image? image; // Optional image
+  final bool isLoading; // Indicates loading state
 
   const CustomElevatedButton({
     super.key,
@@ -20,21 +21,62 @@ class CustomElevatedButton extends StatelessWidget {
     this.borderColor,
     this.icon,
     this.image,
+    this.isLoading = false, // Default loading state is false
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: _buildButtonStyle(context),
-      child: _buildButtonContent(),
+  _CustomElevatedButtonState createState() => _CustomElevatedButtonState();
+}
+
+class _CustomElevatedButtonState extends State<CustomElevatedButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
     );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: ElevatedButton(
+        onPressed: widget.isLoading ? null : _onPressed,
+        style: _buildButtonStyle(context),
+        child: _buildButtonContent(),
+      ),
+    );
+  }
+
+  void _onPressed() {
+    _controller.forward().then((_) {
+      // Call the onPressed callback
+      widget.onPressed();
+      _controller.reverse(); // Reverse the animation
+    });
   }
 
   ButtonStyle _buildButtonStyle(BuildContext context) {
     return ElevatedButton.styleFrom(
-      foregroundColor: textColor ?? AppTheme.buttonTextColor,
-      // Ensure background is transparent so gradient is visible
+      // Remove default background color to apply gradient
       backgroundColor: Colors.transparent,
       padding: EdgeInsets.symmetric(
         vertical: AppTheme.buttonPaddingVertical,
@@ -43,8 +85,7 @@ class CustomElevatedButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.buttonBorderRadius),
       ),
-      // Set elevation to 0 to remove shadow
-      elevation: 0,
+      elevation: 0, // Set elevation to 0 to remove shadow
       visualDensity: VisualDensity.compact, // Improve touch target
     );
   }
@@ -55,15 +96,16 @@ class CustomElevatedButton extends StatelessWidget {
         // Gradient for button background
         gradient: LinearGradient(
           colors: [
-            backgroundColor ?? AppTheme.buttonBackgroundColor,
-            (backgroundColor ?? AppTheme.buttonBackgroundColor).withOpacity(0.8)
+            (widget.backgroundColor ?? AppTheme.accentColor).withOpacity(0.7),
+            widget.backgroundColor ?? AppTheme.accentColor,
+            (widget.backgroundColor ?? AppTheme.accentColor).withOpacity(0.7),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(AppTheme.buttonBorderRadius),
         border: Border.all(
-          color: borderColor ?? AppTheme.buttonBackgroundColor,
+          color: widget.borderColor ?? AppTheme.buttonBackgroundColor, // Border color
         ),
       ),
       child: Container(
@@ -76,17 +118,10 @@ class CustomElevatedButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null) _buildIcon(),
-            if (image != null) _buildImage(),
-            Flexible(
-              child: Text(
-                buttonText,
-                style: InheritedAppTheme.buttonTextStyle.copyWith(
-                  fontSize: AppTheme.buttonTextSize,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
+            if (widget.icon != null) _buildIcon(),
+            if (widget.image != null) _buildImage(),
+            if (widget.isLoading) _buildLoadingIndicator(),
+            if (!widget.isLoading) _buildText(),
           ],
         ),
       ),
@@ -96,7 +131,7 @@ class CustomElevatedButton extends StatelessWidget {
   Widget _buildIcon() {
     return Padding(
       padding: EdgeInsets.only(right: AppTheme.iconPadding),
-      child: icon,
+      child: widget.icon,
     );
   }
 
@@ -106,7 +141,31 @@ class CustomElevatedButton extends StatelessWidget {
       child: SizedBox(
         width: AppTheme.imageSize,
         height: AppTheme.imageSize,
-        child: image,
+        child: widget.image,
+      ),
+    );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return SizedBox(
+      width: AppTheme.buttonMinWidth * 0.6,
+      height: AppTheme.buttonMinHeight * 0.6,
+      child: CircularProgressIndicator(
+        color: widget.textColor ?? Colors.white,
+        strokeWidth: 2,
+      ),
+    );
+  }
+
+  Widget _buildText() {
+    return Flexible(
+      child: Text(
+        widget.buttonText,
+        style: InheritedAppTheme.buttonTextStyle.copyWith(
+          fontSize: AppTheme.buttonTextSize,
+          color: widget.textColor ?? Colors.black, // Ensure text is visible
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }

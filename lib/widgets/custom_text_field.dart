@@ -7,7 +7,7 @@ class CustomTextField extends StatelessWidget {
   final String labelText;
   final bool obscureText;
   final Widget? suffixIcon;
-  final Widget? prefixIcon; // Add prefixIcon property
+  final Widget? prefixIcon;
   final ValueChanged<String>? onChanged;
   final String? errorText;
   final TextInputType? keyboardType;
@@ -18,7 +18,7 @@ class CustomTextField extends StatelessWidget {
     required this.labelText,
     this.obscureText = false,
     this.suffixIcon,
-    this.prefixIcon, // Include prefixIcon in the constructor
+    this.prefixIcon,
     this.onChanged,
     this.errorText,
     this.keyboardType,
@@ -36,12 +36,15 @@ class CustomTextField extends StatelessWidget {
           decoration: InputDecoration(
             labelText: labelText,
             border: const OutlineInputBorder(),
-            labelStyle: TextStyle(fontSize: AppTheme.fontSizeSmall),
+            labelStyle: TextStyle(
+                color: Colors.white, fontSize: AppTheme.fontSizeSmall), // Light label text
             suffixIcon: suffixIcon,
-            prefixIcon: prefixIcon, // Add prefixIcon to decoration
+            prefixIcon: prefixIcon,
             errorText: errorText,
+            errorStyle: TextStyle(color: Colors.redAccent), // Error messages in light color
           ),
-          style: TextStyle(fontSize: AppTheme.fontSizeNormal),
+          style: TextStyle(
+              color: Colors.white, fontSize: AppTheme.fontSizeNormal), // Light text in text field
           onChanged: onChanged,
         ),
         const SizedBox(height: AppTheme.spaceSizeSmall),

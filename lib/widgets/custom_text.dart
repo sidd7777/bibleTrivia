@@ -15,6 +15,10 @@ class CustomText extends StatelessWidget {
   final TextDecoration? decoration; // For underline, strike-through, etc.
   final TextOverflow? overflow;
   final int? maxLines;
+  final List<Shadow>? shadows; // Optional shadow effects
+  final double? textScaleFactor; // For responsive text
+  final bool isResponsive; // Flag to enable responsive sizing
+  final TextStyle? style; // Optional TextStyle parameter
 
   const CustomText({
     super.key,
@@ -30,6 +34,10 @@ class CustomText extends StatelessWidget {
     this.decoration,
     this.overflow,
     this.maxLines,
+    this.shadows,
+    this.textScaleFactor,
+    this.isResponsive = false,
+    this.style, // Optional TextStyle
   });
 
   @override
@@ -39,16 +47,21 @@ class CustomText extends StatelessWidget {
       textAlign: textAlign ?? TextAlign.start,
       overflow: overflow ?? TextOverflow.ellipsis, // Handle overflow gracefully
       maxLines: maxLines, // Limit the number of lines if needed
-      style: TextStyle(
-        color: color ?? AppTheme.accentColor, // Use accent color from the theme
-        fontSize: fontSize ?? AppTheme.fontSizeRegular, // Default font size
-        fontWeight: fontWeight ?? FontWeight.normal, // Default weight is normal
-        fontStyle: fontStyle ?? FontStyle.normal, // Can use italic if needed
-        letterSpacing: letterSpacing ?? 0.0, // Adjust letter spacing
-        wordSpacing: wordSpacing ?? 0.0, // Adjust word spacing
-        height: height ?? 1.2, // Line height, useful for readability
-        decoration: decoration, // Underline, strike-through, etc.
-      ),
+      style: style ?? _getTextStyle(context), // Use provided style or default
+    );
+  }
+
+  TextStyle _getTextStyle(BuildContext context) {
+    return TextStyle(
+      color: color ?? AppTheme.accentColor, // Use accent color from the theme
+      fontSize: fontSize ?? AppTheme.fontSizeRegular, // Default font size
+      fontWeight: fontWeight ?? FontWeight.normal, // Default weight is normal
+      fontStyle: fontStyle ?? FontStyle.normal, // Can use italic if needed
+      letterSpacing: letterSpacing ?? AppTheme.defaultLetterSpacing, // Use AppTheme constant
+      wordSpacing: wordSpacing ?? AppTheme.defaultWordSpacing, // Use AppTheme constant
+      height: height ?? AppTheme.defaultLineHeight, // Use AppTheme constant
+      decoration: decoration, // Underline, strike-through, etc.
+      shadows: shadows, // Apply any optional shadows
     );
   }
 }

@@ -61,10 +61,24 @@ class AppTheme {
   static const String allFieldsRequiredMessage = 'All fields are required';
   static const String registrationFailedMessage = 'Registration failed. Please try again.';
   static const String errorDialogTitle = 'Error';
+  static const String passwordLengthMessage = "Password must be at least 6 characters long.";
   static const String signUpRedirectText = 'Don\'t have an account? Sign Up';
   static const String googleSignInFailedMessage = 'Google sign-in failed.';
   static const String facebookSignInFailedMessage = "Facebook sign-in failed. Please try again.";
   static const String userAlreadyExistsMessage = 'This email is already in use.';
+
+  // Dialogs
+  static const String successDialogTitle = "Success";
+  static const String successDialogMessage = "Your request has been successfully processed.";
+  static const String closeButtonText = "Close"; // For dialog close button text
+
+  // Forgot Password Page
+  static const String emptyEmailError = "Please enter your email address.";
+  static const String passwordResetEmailSent = "Password reset email sent successfully.";
+  static const String passwordResetEmailFailed = "Failed to send password reset email.";
+  static const String forgotPasswordPageTitle = "Forgot Password";
+  static const String forgotPasswordInstructions = "Enter your email to reset your password.";
+  static const String sendResetLinkButtonText = "Send Reset Link";
 
   // Quiz Results
   static const String quizCompletedMessage = 'Quiz Completed. Well done!';
@@ -74,21 +88,25 @@ class AppTheme {
   static const String performanceFeedbackText = 'Your performance was outstanding!';
 
   // Colors
-  static const Color primaryColor = Color(0xFF6200EA); // Purple
+  static const Color primaryColor = Color(0xFF6200EA); // Deep Purple
   static const Color accentColor = Color(0xFFBB86FC); // Light Purple
-  static const Color backgroundColor = Color(0xFF121212); // Dark Black
-  static const Color buttonBackgroundColor = primaryColor; // Purple button background
+  static const Color backgroundColor = Color(0xFF1C1C1E); // Darker Gray for better contrast
+  static const Color buttonBackgroundColor = Color(0xFF6A1B9A); // Dark Purple for buttons
   static const Color buttonTextColor = Colors.white; // White text for buttons
-  static const Color buttonBorderColor = Colors.deepPurpleAccent;
-  static const Color buttonGradientStart = Colors.purple;
-  static const Color buttonGradientEnd = Colors.deepPurpleAccent;
-  static const Color drawerHeaderBackgroundColor = Colors.deepPurple;
-  static const Color iconColor = Colors.white;
-  static const Color optionCardColor = Color(0xFF303030); // Dark grey for option cards
-  static const Color dialogTitleColor = Colors.black;
-  static const Color dialogContentColor = Colors.black;
-  static const Color textColor = Colors.purpleAccent;
-
+  static const Color buttonBorderColor = Colors.purpleAccent; // Accent for button borders
+  static const Color buttonGradientStart = Color(0xFF8E24AA); // Gradient start color
+  static const Color buttonGradientEnd = Color(0xFFAB47BC); // Gradient end color
+  static const Color drawerHeaderBackgroundColor =
+      Color(0xFF4A148C); // Dark Purple for drawer header
+  static const Color drawerBackgroundColor = Color(0xFF212121); // Dark Gray for drawer background
+  static const Color iconColor = Colors.white; // White for icons
+  static const Color optionCardColor =
+      Color(0xFF424242); // Slightly lighter dark gray for option cards
+  static const Color dialogTitleColor = Colors.white; // White for dialog titles
+  static const Color dialogContentColor = Colors.white; // White for dialog content
+  static const Color textColor = Colors.white; // White for general text
+  static const Color errorColor = Colors.red;
+  static const Color labelColor = Colors.black54;
   // Sizes
   static const double buttonPaddingVertical = 15.0;
   static const double buttonPaddingHorizontal = 30.0;
@@ -96,10 +114,10 @@ class AppTheme {
   static const double buttonElevation = 4;
   static const double buttonMinWidth = 75.0;
   static const double buttonMinHeight = 50.0;
-  static const double buttonTextSize = 18.0;
-  static const double iconPadding = 8.0;
   static const double imagePadding = 8.0;
   static const double imageSize = 40.0;
+  static const double iconPadding = 8.0;
+  static const double buttonTextSize = 18.0;
 
   // Spacing
   static const double spaceSizeExtremeSmall = 8.0;
@@ -116,4 +134,24 @@ class AppTheme {
   static const double fontSizeTitle = 36.0;
   static const double fontSizeLargeTitle = 40.0;
   static const double fontSizeExtremeLargeTitle = 56.0;
+
+  // Additional Theme Constants
+  static const double drawerElevation = 4.0; // Elevation for drawer
+  static const double headerCornerRadius = 20.0; // Corner radius for drawer header
+  static const double headerSpacing = 10.0; // Spacing below header title
+  static const double itemPaddingVertical = 10.0; // Vertical padding for drawer items
+  static const double itemPaddingHorizontal = 20.0; // Horizontal padding for drawer items
+  static const double itemBorderRadius = 10.0; // Border radius for drawer items
+  static const double itemSpacing = 12.0; // Spacing between icon and text in drawer items
+  static const double dialogActionSpacing =
+      16.0; // Spacing between dialog content and action buttons
+  static const double dialogContentSpacing = 12.0; // Spacing between title and content
+  static const double dialogBorderRadius = 12.0; // Border radius for dialogs
+  static const double dialogPadding = 20.0; // Padding inside the dialog container
+  static const double listTilePadding = 16.0; // Padding for list tile
+  static const double listTileBorderRadius = 8.0; // Border radius for list tile background
+  static const double listTileIconSize = 24.0; // Size for the icon
+  static const double defaultLetterSpacing = 0.5; // Default letter spacing
+  static const double defaultWordSpacing = 0.5; // Default word spacing
+  static const double defaultLineHeight = 1.5; // Default line height
 }

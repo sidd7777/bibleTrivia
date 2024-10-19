@@ -17,8 +17,7 @@ class PathPainter extends CustomPainter {
 
     final path = Path();
     final waveAmplitude = size.width * 0.3; // Adjust amplitude
-    final verticalSpacing =
-        size.height / (levels + 2); // Spacing between levels
+    final verticalSpacing = size.height / (levels + 2); // Spacing between levels
     const waveFrequency = 0.025; // Frequency of sine wave
 
     circleCenters.clear();
