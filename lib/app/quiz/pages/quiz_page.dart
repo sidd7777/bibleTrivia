@@ -272,7 +272,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
                   buttonText: AppTheme.endQuizText,
                   onPressed: () async {
                     final shouldExit = await _showExitDialog();
-                    if (shouldExit == true && mounted) {
+                    if (shouldExit == true) {
                       Navigator.pop(context); // Exit the quiz
                     }
                   },

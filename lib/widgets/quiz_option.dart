@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../core/app-theme/app_theme.dart';
+import '../core/app-theme/inherited_app_theme.dart';
+
 class QuizOption extends StatelessWidget {
   final String option;
   final String? selectedOption;
@@ -10,32 +13,50 @@ class QuizOption extends StatelessWidget {
   const QuizOption({
     super.key,
     required this.option,
-    this.selectedOption,
+    required this.selectedOption,
     required this.isAnswered,
     required this.correctAnswer,
     required this.onSelect,
   });
 
+  Color getButtonColor() {
+    if (!isAnswered) return AppTheme.optionCardColor;
+
+    if (option == correctAnswer) {
+      return Colors.green; // Correct answer
+    }
+    if (selectedOption == option) {
+      return Colors.red; // Selected but incorrect answer
+    }
+    return AppTheme.optionCardColor; // Default card color
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool isCorrect = option == correctAnswer;
-    bool isSelected = selectedOption == option;
-
     return GestureDetector(
-      onTap: () => onSelect(option),
-      child: Container(
-        decoration: BoxDecoration(
-          color: isAnswered
-              ? (isCorrect ? Colors.green : (isSelected ? Colors.red : Colors.grey))
-              : Colors.white,
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(8),
+      onTap: isAnswered ? null : () => onSelect(option),
+      child: Card(
+        elevation: AppTheme.spaceSizeMedium,
+        color: getButtonColor(),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.buttonBorderRadius),
         ),
-        padding: const EdgeInsets.all(16),
-        child: Text(
-          option,
-          style: TextStyle(
-            color: isAnswered && isSelected ? Colors.white : Colors.black,
+        child: Padding(
+          padding: const EdgeInsets.all(AppTheme.spaceSizeSmall),
+          child: Row(
+            children: [
+              Radio<String>(
+                value: option,
+                groupValue: selectedOption,
+                onChanged: isAnswered ? null : (value) {},
+              ),
+              Expanded(
+                child: Text(
+                  option,
+                  style: InheritedAppTheme.optionTextStyle,
+                ),
+              ),
+            ],
           ),
         ),
       ),
