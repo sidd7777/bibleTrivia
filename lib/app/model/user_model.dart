@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class UserModel {
   final String userId;
   final String username;
@@ -16,26 +19,27 @@ class UserModel {
   final Map<String, dynamic> scores; // Stores level scores
   final List<String> donations;
   late final double totalDonationAmount;
+  bool welcomeScreenSeen;
 
-  UserModel({
-    required this.userId,
-    required this.username,
-    required this.name,
-    required this.email,
-    required this.password,
-    this.mobileNumber,
-    required this.createdAt,
-    this.currentLevel = 0,
-    this.totalScore = 0,
-    this.rewards = const [],
-    this.lives = 5,
-    required this.lastRechargeTime,
-    this.customizableAvatar = '',
-    this.userLevel = 1,
-    this.scores = const {},
-    this.donations = const [],
-    this.totalDonationAmount = 0.0,
-  });
+  UserModel(
+      {required this.userId,
+      required this.username,
+      required this.name,
+      required this.email,
+      required this.password,
+      this.mobileNumber,
+      required this.createdAt,
+      this.currentLevel = 0,
+      this.totalScore = 0,
+      this.rewards = const [],
+      this.lives = 5,
+      required this.lastRechargeTime,
+      this.customizableAvatar = '',
+      this.userLevel = 1,
+      this.scores = const {},
+      this.donations = const [],
+      this.totalDonationAmount = 0.0,
+      this.welcomeScreenSeen = false});
 
   // Converts UserModel to a Map for Firestore storage
   Map<String, dynamic> toMap() {
@@ -57,6 +61,7 @@ class UserModel {
       'scores': scores,
       'donations': donations,
       'totalDonationAmount': totalDonationAmount,
+      'welcomeScreenSeen': welcomeScreenSeen
     };
   }
 
@@ -80,7 +85,30 @@ class UserModel {
       scores: Map<String, dynamic>.from(map['scores'] ?? {}),
       donations: List<String>.from(map['donations'] ?? []),
       totalDonationAmount: map['totalDonationAmount']?.toDouble() ?? 0.0,
+      welcomeScreenSeen: map['welcomeScreenSeen'] ?? false,
     );
+  }
+
+  static Future<void> updateWelcomeScreenSeen(String userId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'welcomeScreenSeen': true});
+    } catch (e) {
+      print('Error updating welcome screen seen status: $e');
+    }
+  }
+
+  static Future<bool> checkWelcomeScreenSeen(User user) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+
+      return userDoc.data()!['welcomeScreenSeen'];
+    } catch (error) {
+      throw Exception("Error during checking welcomeScreenSeen variable : $error");
+    }
   }
 
   // Updates the user's total score

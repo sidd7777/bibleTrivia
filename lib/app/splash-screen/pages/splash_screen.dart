@@ -1,8 +1,8 @@
+import 'package:bible_trivia/app/authenticate/sign-in/pages/common_login_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/app-theme/app_theme.dart';
 import '../../../core/app-theme/inherited_app_theme.dart';
-import '../../homepage/pages/home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const HomePage(title: AppTheme.appBarTitleText),
+          builder: (context) => CommonLoginPage(),
         ),
       );
     }

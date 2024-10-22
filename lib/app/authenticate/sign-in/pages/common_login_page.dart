@@ -1,3 +1,4 @@
+import 'package:bible_trivia/app/welcome/pages/welcome_screen.dart';
 import 'package:bible_trivia/widgets/custom_error_dialog.dart';
 import 'package:bible_trivia/widgets/custom_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import '../../../../core/app-theme/app_theme.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/custom_text_field.dart';
 import '../../../homepage/pages/home_page.dart';
+import '../../../model/user_model.dart';
 import '../../auth/auth_service.dart';
 import '../../forgot-password/widgets/forgot_password_dialog.dart';
 import '../../sign-up/pages/sign_up_page.dart';
@@ -49,23 +51,28 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
     if (_validateInputs(email, password)) {
       try {
         User? user = await authService.signInWithEmailPassword(context, email, password);
+        print("User : $user");
         if (user != null && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Login successful!")),
           );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomePage(
-                title: AppTheme.appBarTitleText,
-              ),
-            ),
-          );
+          _navigateToWelcomeScreen(user);
         } else {
           _showErrorDialog(AppTheme.registrationFailedMessage);
         }
+      } on FirebaseAuthException catch (e) {
+        switch (e.code) {
+          case 'user-not-found':
+            _showErrorDialog("No user found for that email.");
+            break;
+          case 'wrong-password':
+            _showErrorDialog("Incorrect password.");
+            break;
+          default:
+            _showErrorDialog("Login failed: ${e.message}");
+        }
       } catch (e) {
-        _showErrorDialog("An error occurred: ${e.toString()}");
+        _showErrorDialog("An unexpected error occurred: ${e.toString()}");
       }
     }
 
@@ -119,15 +126,9 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
 
     try {
       User? user = await authService.signInWithFacebook();
+      print("User : $user");
       if (user != null && mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(
-              title: AppTheme.appBarTitleText,
-            ),
-          ),
-        );
+        _navigateToWelcomeScreen(user);
       } else {
         _showErrorDialog(AppTheme.facebookSignInFailedMessage);
       }
@@ -147,15 +148,9 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
 
     try {
       User? user = await authService.signInWithGoogle();
+      print("User : $user");
       if (user != null && mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(
-              title: AppTheme.appBarTitleText,
-            ),
-          ),
-        );
+        _navigateToWelcomeScreen(user);
       } else {
         _showErrorDialog(AppTheme.googleSignInFailedMessage);
       }
@@ -165,6 +160,30 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
       setState(() {
         _isGoogleLoading = false;
       });
+    }
+  }
+
+  void _navigateToWelcomeScreen(User user) async {
+    bool hasSeenWelcomeScreen = await UserModel.checkWelcomeScreenSeen(user);
+
+    if (!hasSeenWelcomeScreen && mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WelcomeScreen(
+            userId: user.uid,
+          ), // Pass user if needed
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(
+            title: AppTheme.appBarTitleText,
+          ), // Replace HomePage with your home screen widget
+        ),
+      );
     }
   }
 
@@ -179,28 +198,32 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
     );
   }
 
-  // New method to build Google login button
+  // Method to build Google login button
   Widget _buildGoogleButton() {
     return _isGoogleLoading
         ? CircularProgressIndicator()
         : CustomElevatedButton(
             image: Image.asset("assets/images/google.png"),
-            onPressed: () {
-              _isGoogleLoading ? null : _loginWithGoogle();
-            },
+            onPressed: _isGoogleLoading
+                ? () {}
+                : () async {
+                    await _loginWithGoogle(); // Wrap in an anonymous function
+                  },
             buttonText: AppTheme.googleSignInButtonText,
           );
   }
 
-  // New method to build Facebook login button
+  // Method to build Facebook login button
   Widget _buildFacebookButton() {
     return _isFacebookLoading
         ? CircularProgressIndicator()
         : CustomElevatedButton(
             image: Image.asset("assets/images/facebook.jpeg"),
-            onPressed: () {
-              _isFacebookLoading ? null : _loginWithFacebook();
-            },
+            onPressed: _isFacebookLoading
+                ? () {}
+                : () async {
+                    await _loginWithFacebook(); // Wrap in an anonymous function
+                  },
             buttonText: AppTheme.facebookSignInButtonText,
           );
   }
@@ -215,7 +238,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
           child: Column(
             children: [
               Card(
-                elevation: AppTheme.spaceSizeSmall,
+                elevation: AppTheme.spaceSizeMedium,
                 child: Padding(
                   padding: EdgeInsets.all(AppTheme.spaceSizeMedium),
                   child: Column(
@@ -224,7 +247,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                         controller: _emailController,
                         labelText: AppTheme.emailLabel,
                         keyboardType: TextInputType.emailAddress,
-                        errorText: _emailError, // Display error for email
+                        errorText: _emailError,
                       ),
                       SizedBox(height: AppTheme.spaceSizeMedium),
                       CustomTextField(
@@ -241,15 +264,13 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                             });
                           },
                         ),
-                        errorText: _passwordError, // Display error for password
+                        errorText: _passwordError,
                       ),
                       SizedBox(height: AppTheme.spaceSizeMedium),
                       _isLoading
                           ? CircularProgressIndicator()
                           : CustomElevatedButton(
-                              onPressed: () {
-                                _isLoading ? null : _login();
-                              },
+                              onPressed: _isLoading ? () {} : _login,
                               buttonText: AppTheme.loginText,
                             ),
                       CustomElevatedButton(
@@ -260,20 +281,19 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                   ),
                 ),
               ),
-              SizedBox(height: AppTheme.spaceSizeMedium), // Spacing between card and buttons
+              SizedBox(height: AppTheme.spaceSizeMedium),
               _buildGoogleButton(),
-              SizedBox(height: AppTheme.spaceSizeMedium), // Spacing between buttons
+              SizedBox(height: AppTheme.spaceSizeMedium),
               _buildFacebookButton(),
-              SizedBox(height: AppTheme.spaceSizeMedium), // Additional spacing
+              SizedBox(height: AppTheme.spaceSizeMedium),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CustomText(text: AppTheme.alreadyHaveAccountText),
                   CustomElevatedButton(
                     onPressed: _isLoading
-                        ? () {} // No-op function to disable action when loading
+                        ? () {}
                         : () {
-                            // If _isLoading is false, navigate to the SignUpPage
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -282,7 +302,7 @@ class _CommonLoginPageState extends State<CommonLoginPage> {
                             );
                           },
                     buttonText: AppTheme.signUpButtonText,
-                    isLoading: _isLoading, // Pass the loading state to the button
+                    isLoading: _isLoading,
                   ),
                 ],
               ),
