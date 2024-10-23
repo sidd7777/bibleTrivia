@@ -1,8 +1,12 @@
+import 'package:bible_trivia/app/authenticate/sign-in/pages/common_login_page.dart';
+import 'package:bible_trivia/app/profile/pages/profile_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../app/homepage/pages/home_page.dart';
 import '../core/app-theme/app_theme.dart';
 import '../core/app-theme/inherited_app_theme.dart';
+import 'exit_dialog.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -10,7 +14,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      elevation: AppTheme.drawerElevation, // Use a constant for elevation
+      elevation: AppTheme.drawerElevation,
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -27,7 +31,7 @@ class AppDrawer extends StatelessWidget {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: AppTheme.drawerHeaderBackgroundColor, // Same as drawer's background color
+                color: AppTheme.drawerHeaderBackgroundColor,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -36,13 +40,13 @@ class AppDrawer extends StatelessWidget {
                     AppTheme.quizMenuText,
                     style: InheritedAppTheme.drawerHeaderTextStyle,
                   ),
-                  SizedBox(height: AppTheme.headerSpacing), // Use a constant for spacing
+                  SizedBox(height: AppTheme.headerSpacing),
                 ],
               ),
             ),
             _buildDrawerItem(
               context,
-              title: AppTheme.homeText,
+              title: AppTheme.homeText, // Use constant instead of hardcoded string
               icon: Icons.home,
               onTap: () {
                 Navigator.pushReplacement(
@@ -57,11 +61,22 @@ class AppDrawer extends StatelessWidget {
             ),
             _buildDrawerItem(
               context,
-              title: AppTheme.exitText,
-              icon: Icons.exit_to_app,
+              title: AppTheme.profileText, // Use constant instead of hardcoded string
+              icon: Icons.account_circle,
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(),
+                  ),
+                );
               },
+            ),
+            _buildDrawerItem(
+              context,
+              title: AppTheme.logoutText, // Use constant instead of hardcoded string
+              icon: Icons.logout,
+              onTap: _confirmLogOut(context),
             ),
           ],
         ),
@@ -69,11 +84,30 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
+  _confirmLogOut(BuildContext context) async {
+    // Show the exit dialog before logging out
+    final shouldLogout = await ExitDialog.show(
+      context,
+      AppTheme.logoutConfirmationTitle, // Use constant instead of hardcoded string
+      AppTheme.logoutConfirmationMessage, // Use constant instead of hardcoded string
+    );
+
+    if (shouldLogout == true) {
+      // User confirmed logout
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CommonLoginPage(),
+        ),
+      );
+    }
+  }
+
   Widget _buildDrawerItem(BuildContext context,
       {required String title, required IconData icon, required VoidCallback onTap}) {
     return GestureDetector(
       onTap: () {
-        // Trigger the tap effect
         onTap();
       },
       child: AnimatedContainer(
@@ -83,12 +117,16 @@ class AppDrawer extends StatelessWidget {
             vertical: AppTheme.itemPaddingVertical, horizontal: AppTheme.itemPaddingHorizontal),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppTheme.itemBorderRadius),
-          color: Colors.transparent, // Set color for hover effect
+          color: Colors.transparent,
         ),
         child: Row(
           children: [
-            Icon(icon, color: AppTheme.iconColor), // Use AppTheme for icon color
-            SizedBox(width: AppTheme.itemSpacing), // Use a constant for spacing
+            Icon(
+              icon,
+              color: AppTheme.iconColor,
+              size: AppTheme.spaceSizeLarge,
+            ),
+            SizedBox(width: AppTheme.itemSpacing),
             Text(
               title,
               style: InheritedAppTheme.drawerItemTextStyle,

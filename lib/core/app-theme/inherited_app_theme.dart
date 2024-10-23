@@ -96,4 +96,9 @@ class InheritedAppTheme {
     fontSize: AppTheme.fontSizeRegular,
     color: AppTheme.textColor,
   );
+
+  static TextStyle get baseTextStyle => TextStyle(
+        fontSize: AppTheme.fontSizeNormal,
+        color: AppTheme.textColor,
+      );
 }
