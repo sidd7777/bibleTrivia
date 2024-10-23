@@ -7,7 +7,7 @@ class AppTheme {
   static const String appBarTitleText = "Bible Trivia App";
   static const String startQuizText = "Start Quiz";
   static const String startGameText = "Start Game";
-  static const String exitQuizText = "End Quiz?";
+  static const String exitQuizText = "End Quiz";
   static const String exitText = "Exit";
   static const String cancelText = "Cancel";
   static const String confirmationExitQuiz = "Are you sure you want to exit the Quiz?";
@@ -79,6 +79,13 @@ class AppTheme {
   static const String forgotPasswordPageTitle = "Forgot Password";
   static const String forgotPasswordInstructions = "Enter your email to reset your password.";
   static const String sendResetLinkButtonText = "Send Reset Link";
+
+  //Profile
+
+  static const String profileText = "Profile";
+  static const String logoutText = "Log Out";
+  static const String logoutConfirmationTitle = "Log Out";
+  static const String logoutConfirmationMessage = "Are you sure you want to log out?";
 
   // Quiz Results
   static const String quizCompletedMessage = 'Quiz Completed. Well done!';

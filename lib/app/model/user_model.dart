@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class UserModel {
   final String userId;
-  final String username;
-  final String name;
-  final String email;
+  late final String username;
+  late final String name;
+  late final String email;
   final String password; // Sensitive information, handle securely
-  final String? mobileNumber;
+  late final String? mobileNumber;
   final DateTime createdAt;
   late final int currentLevel;
   late final int totalScore;
