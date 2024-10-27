@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../widgets/custom_text_field.dart';
 import '../../model/user_model.dart';
@@ -12,22 +15,23 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final ProfileController _profileController = ProfileController(); // Instantiate the controller
+  final ProfileController _profileController = ProfileController();
   UserModel? userProfile;
-  bool isEditing = false; // Track whether we are in edit mode
+  bool isEditing = false;
 
-  // Controllers for text fields
   late TextEditingController _usernameController;
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _mobileController;
+  final ImagePicker _imagePicker = ImagePicker();
+  XFile? _profilePhoto;
+  String? profilePhotoUrl;
 
   @override
   void initState() {
     super.initState();
     _fetchUserProfile();
 
-    // Initialize controllers
     _usernameController = TextEditingController();
     _nameController = TextEditingController();
     _emailController = TextEditingController();
@@ -36,7 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void dispose() {
-    // Dispose controllers to avoid memory leaks
     _usernameController.dispose();
     _nameController.dispose();
     _emailController.dispose();
@@ -53,6 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _nameController.text = userProfile!.name;
         _emailController.text = userProfile!.email;
         _mobileController.text = userProfile!.mobileNumber ?? '';
+        profilePhotoUrl = userProfile!.photoURL;
       });
     }
   }
@@ -66,21 +70,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _updateUserProfile() async {
     if (userProfile != null) {
       try {
+        if (profilePhotoUrl != null) {
+          profilePhotoUrl = await _profileController.uploadImage(_profilePhoto!);
+        }
         await _profileController.updateUserProfile(
           userProfile!,
           _usernameController,
           _nameController,
           _emailController,
           _mobileController,
+          profilePhotoUrl,
         );
 
-        // Show a success message
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Profile updated successfully')),
           );
         }
-        _toggleEdit(); // Exit edit mode
+        _toggleEdit();
       } catch (e) {
         print('Error updating user profile: $e');
         if (mounted) {
@@ -94,109 +101,122 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<bool> _onWillPop() async {
     if (isEditing) {
-      final shouldSave = await showDialog<bool>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Unsaved Changes'),
-            content: Text('You have unsaved changes. Would you like to save them before leaving?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true), // Save and exit
-                child: Text('Save'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false), // Exit without saving
-                child: Text('Discard'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(null), // Cancel the action
-                child: Text('Cancel'),
-              ),
-            ],
-          );
-        },
-      );
-
-      // If the user chooses to save, call the update function
-      if (shouldSave == true) {
-        await _updateUserProfile();
-        return true; // Allow exit after saving
-      } else if (shouldSave == false) {
-        return true; // Allow exit without saving
-      }
-      return false; // Cancel the exit
+      return await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('Discard changes?'),
+              content: Text('You have unsaved changes. Are you sure you want to leave?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false), // Stay on the page
+                  child: Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true), // Discard changes
+                  child: Text('Discard'),
+                ),
+              ],
+            ),
+          ) ??
+          false;
     }
-    return true; // Allow exit if not editing
+    return true; // Close the screen if not in edit mode
+  }
+
+  Future<void> _pickProfilePhoto() async {
+    if (isEditing) {
+      _profilePhoto = await _imagePicker.pickImage(source: ImageSource.gallery);
+      setState(() {});
+    }
+  }
+
+  void _showEditSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Please use the edit button to edit the fields')),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     if (userProfile == null) {
-      return Center(
-          child: CircularProgressIndicator()); // Loading indicator while fetching user data
+      return Center(child: CircularProgressIndicator());
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
-        backgroundColor: Colors.purple, // Your app theme color
+        backgroundColor: Colors.purple,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomTextField(
-              controller: _usernameController,
-              labelText: 'Username',
-              obscureText: false,
-              onChanged: (value) {
-                userProfile!.username = value; // Update userProfile
-              },
-            ),
-            SizedBox(height: 16),
-            CustomTextField(
-              controller: _nameController,
-              labelText: 'Display Name',
-              obscureText: false,
-              onChanged: (value) {
-                userProfile!.name = value; // Update userProfile
-              },
-            ),
-            SizedBox(height: 16),
-            CustomTextField(
-              controller: _emailController,
-              labelText: 'Email',
-              keyboardType: TextInputType.emailAddress,
-              obscureText: false,
-              onChanged: (value) {
-                userProfile!.email = value; // Update userProfile
-              },
-            ),
-            SizedBox(height: 16),
-            CustomTextField(
-              controller: _mobileController,
-              labelText: 'Mobile Number',
-              keyboardType: TextInputType.phone,
-              obscureText: false,
-              onChanged: (value) {
-                userProfile!.mobileNumber = value.isNotEmpty ? value : null; // Update userProfile
-              },
-            ),
-            Spacer(),
-            // Disable the navigation back button while editing
-            WillPopScope(
-              onWillPop: _onWillPop, // Handle back navigation
-              child: Container(),
-            ),
-          ],
+      body: GestureDetector(
+        onTap: () {
+          if (!isEditing) {
+            _showEditSnackBar();
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: isEditing ? _pickProfilePhoto : _showEditSnackBar,
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundImage: _profilePhoto != null
+                      ? FileImage(File(_profilePhoto!.path))
+                      : (profilePhotoUrl != null ? NetworkImage(profilePhotoUrl!) : null),
+                  child: _profilePhoto == null && profilePhotoUrl == null
+                      ? Icon(
+                          Icons.camera_alt_sharp,
+                          size: 50,
+                          color: Colors.grey,
+                        )
+                      : null,
+                ),
+              ),
+              SizedBox(height: 16),
+              CustomTextField(
+                controller: _usernameController,
+                labelText: 'Username',
+                obscureText: false,
+                readOnly: !isEditing,
+              ),
+              SizedBox(height: 16),
+              CustomTextField(
+                controller: _nameController,
+                labelText: 'Display Name',
+                obscureText: false,
+                readOnly: !isEditing,
+              ),
+              SizedBox(height: 16),
+              CustomTextField(
+                controller: _emailController,
+                labelText: 'Email',
+                keyboardType: TextInputType.emailAddress,
+                obscureText: false,
+                readOnly: !isEditing,
+              ),
+              SizedBox(height: 16),
+              CustomTextField(
+                controller: _mobileController,
+                labelText: 'Mobile Number',
+                keyboardType: TextInputType.phone,
+                obscureText: false,
+                readOnly: !isEditing,
+              ),
+              Spacer(),
+              WillPopScope(
+                onWillPop: _onWillPop,
+                child: Container(),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: isEditing ? _updateUserProfile : _toggleEdit,
-        backgroundColor: Colors.purple, // Your app theme color
-        child: Icon(isEditing ? Icons.save : Icons.edit), // Change icon based on editing state
+        backgroundColor: Colors.purple,
+        child: Icon(isEditing ? Icons.save : Icons.edit),
       ),
     );
   }

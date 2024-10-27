@@ -46,7 +46,7 @@ class AppDrawer extends StatelessWidget {
             ),
             _buildDrawerItem(
               context,
-              title: AppTheme.homeText, // Use constant instead of hardcoded string
+              title: AppTheme.homeText,
               icon: Icons.home,
               onTap: () {
                 Navigator.pushReplacement(
@@ -61,7 +61,7 @@ class AppDrawer extends StatelessWidget {
             ),
             _buildDrawerItem(
               context,
-              title: AppTheme.profileText, // Use constant instead of hardcoded string
+              title: AppTheme.profileText,
               icon: Icons.account_circle,
               onTap: () {
                 Navigator.push(
@@ -74,9 +74,10 @@ class AppDrawer extends StatelessWidget {
             ),
             _buildDrawerItem(
               context,
-              title: AppTheme.logoutText, // Use constant instead of hardcoded string
+              title: AppTheme.logoutText,
               icon: Icons.logout,
-              onTap: _confirmLogOut(context),
+              // Pass a function reference instead of calling the function
+              onTap: () => _confirmLogOut(context),
             ),
           ],
         ),
@@ -84,12 +85,12 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  _confirmLogOut(BuildContext context) async {
+  Future<void> _confirmLogOut(BuildContext context) async {
     // Show the exit dialog before logging out
     final shouldLogout = await ExitDialog.show(
       context,
-      AppTheme.logoutConfirmationTitle, // Use constant instead of hardcoded string
-      AppTheme.logoutConfirmationMessage, // Use constant instead of hardcoded string
+      AppTheme.logoutConfirmationTitle,
+      AppTheme.logoutConfirmationMessage,
     );
 
     if (shouldLogout == true) {
@@ -107,14 +108,14 @@ class AppDrawer extends StatelessWidget {
   Widget _buildDrawerItem(BuildContext context,
       {required String title, required IconData icon, required VoidCallback onTap}) {
     return GestureDetector(
-      onTap: () {
-        onTap();
-      },
+      onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
         padding: EdgeInsets.symmetric(
-            vertical: AppTheme.itemPaddingVertical, horizontal: AppTheme.itemPaddingHorizontal),
+          vertical: AppTheme.itemPaddingVertical,
+          horizontal: AppTheme.itemPaddingHorizontal,
+        ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppTheme.itemBorderRadius),
           color: Colors.transparent,

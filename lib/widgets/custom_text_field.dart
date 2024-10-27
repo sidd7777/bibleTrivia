@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final String? errorText;
   final TextInputType? keyboardType;
+  final bool readOnly; // New property
 
   const CustomTextField({
     super.key,
@@ -22,6 +23,7 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.errorText,
     this.keyboardType,
+    this.readOnly = false, // Default to false
   });
 
   @override
@@ -33,18 +35,23 @@ class CustomTextField extends StatelessWidget {
           keyboardType: keyboardType ?? TextInputType.text,
           controller: controller,
           obscureText: obscureText,
+          readOnly: readOnly, // Set the readOnly property here
           decoration: InputDecoration(
             labelText: labelText,
             border: const OutlineInputBorder(),
             labelStyle: TextStyle(
-                color: Colors.white, fontSize: AppTheme.fontSizeSmall), // Light label text
+              color: Colors.white,
+              fontSize: AppTheme.fontSizeSmall,
+            ), // Light label text
             suffixIcon: suffixIcon,
             prefixIcon: prefixIcon,
             errorText: errorText,
-            errorStyle: TextStyle(color: Colors.redAccent), // Error messages in light color
+            errorStyle: TextStyle(color: Colors.redAccent), // Error message color
           ),
           style: TextStyle(
-              color: Colors.white, fontSize: AppTheme.fontSizeNormal), // Light text in text field
+            color: Colors.white,
+            fontSize: AppTheme.fontSizeNormal,
+          ), // Light text in text field
           onChanged: onChanged,
         ),
         const SizedBox(height: AppTheme.spaceSizeSmall),

@@ -19,6 +19,7 @@ class UserModel {
   final Map<String, dynamic> scores; // Stores level scores
   final List<String> donations;
   late final double totalDonationAmount;
+  late final String? photoURL;
   bool welcomeScreenSeen;
 
   UserModel(
@@ -39,6 +40,7 @@ class UserModel {
       this.scores = const {},
       this.donations = const [],
       this.totalDonationAmount = 0.0,
+      this.photoURL,
       this.welcomeScreenSeen = false});
 
   // Converts UserModel to a Map for Firestore storage
@@ -61,6 +63,7 @@ class UserModel {
       'scores': scores,
       'donations': donations,
       'totalDonationAmount': totalDonationAmount,
+      'photoURL': photoURL,
       'welcomeScreenSeen': welcomeScreenSeen
     };
   }
@@ -85,6 +88,7 @@ class UserModel {
       scores: Map<String, dynamic>.from(map['scores'] ?? {}),
       donations: List<String>.from(map['donations'] ?? []),
       totalDonationAmount: map['totalDonationAmount']?.toDouble() ?? 0.0,
+      photoURL: map['photoURL'],
       welcomeScreenSeen: map['welcomeScreenSeen'] ?? false,
     );
   }
