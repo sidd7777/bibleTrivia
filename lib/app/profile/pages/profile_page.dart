@@ -164,7 +164,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   radius: 60,
                   backgroundImage: _profilePhoto != null
                       ? FileImage(File(_profilePhoto!.path))
-                      : (profilePhotoUrl != null ? NetworkImage(profilePhotoUrl!) : null),
+                      : (profilePhotoUrl != null
+                          ? NetworkImage(profilePhotoUrl!)
+                          : AssetImage('assets/images/default.png')),
                   child: _profilePhoto == null && profilePhotoUrl == null
                       ? Icon(
                           Icons.camera_alt_sharp,
